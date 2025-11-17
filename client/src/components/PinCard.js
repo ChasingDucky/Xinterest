@@ -27,6 +27,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { monetPalette } from '../theme';
 import LazyImage from './LazyImage';
 import ShareDialog from './ShareDialog';
+import ImageViewer from './ImageViewer';
 
 const PinCard = ({ pin, onUpdate, onDelete }) => {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
   const [savesCount, setSavesCount] = useState(pin.saves || 0);
   const [anchorEl, setAnchorEl] = useState(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
 
   const handleLike = async (e) => {
     e.stopPropagation();
@@ -109,16 +111,27 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
       }}
       onClick={() => navigate(`/pin/${pin._id}`)}
     >
-      <LazyImage
-        src={pin.image.startsWith('http') ? pin.image : `http://localhost:7666${pin.image}`}
-        alt={pin.title}
-        sx={{
-          width: '100%',
-          height: 'auto',
-          objectFit: 'cover',
-          borderRadius: 0,
+      <Box
+        onClick={(e) => {
+          e.stopPropagation();
+          setImageViewerOpen(true);
         }}
-      />
+        sx={{
+          cursor: 'zoom-in',
+          position: 'relative',
+        }}
+      >
+        <LazyImage
+          src={pin.image.startsWith('http') ? pin.image : `http://localhost:7666${pin.image}`}
+          alt={pin.title}
+          sx={{
+            width: '100%',
+            height: 'auto',
+            objectFit: 'cover',
+            borderRadius: 0,
+          }}
+        />
+      </Box>
 
       <Box
         className="overlay"
@@ -271,6 +284,12 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
       <ShareDialog
         open={shareDialogOpen}
         onClose={() => setShareDialogOpen(false)}
+        pin={pin}
+      />
+
+      <ImageViewer
+        open={imageViewerOpen}
+        onClose={() => setImageViewerOpen(false)}
         pin={pin}
       />
     </Card>

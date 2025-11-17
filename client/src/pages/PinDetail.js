@@ -28,6 +28,7 @@ import { pinsAPI } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { monetPalette } from '../theme';
 import ShareDialog from '../components/ShareDialog';
+import ImageViewer from '../components/ImageViewer';
 
 const PinDetail = () => {
   const { id } = useParams();
@@ -40,6 +41,7 @@ const PinDetail = () => {
   const [comment, setComment] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
 
   useEffect(() => {
     loadPin();
@@ -177,12 +179,28 @@ const PinDetail = () => {
           >
             {/* Image */}
             <Box
+              onClick={() => setImageViewerOpen(true)}
               sx={{
                 flex: { md: '0 0 50%' },
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 bgcolor: 'grey.100',
+                cursor: 'zoom-in',
+                position: 'relative',
+                '&:hover::after': {
+                  content: '"点击查看大图"',
+                  position: 'absolute',
+                  bottom: 16,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  bgcolor: alpha('#000', 0.7),
+                  color: 'white',
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2,
+                  fontSize: '0.875rem',
+                },
               }}
             >
               <img
@@ -380,6 +398,12 @@ const PinDetail = () => {
         <ShareDialog
           open={shareDialogOpen}
           onClose={() => setShareDialogOpen(false)}
+          pin={pin}
+        />
+
+        <ImageViewer
+          open={imageViewerOpen}
+          onClose={() => setImageViewerOpen(false)}
           pin={pin}
         />
       </Container>
