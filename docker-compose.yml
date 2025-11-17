@@ -1,13 +1,12 @@
-version: '3.8'
-
 services:
   # MongoDB Database
   mongodb:
     image: mongo:7.0
     container_name: xinterest-mongodb
     restart: unless-stopped
-    ports:
-      - "27017:27017"
+    # ports:
+    #   - "27017:27017"  # 注释掉以避免端口冲突，容器内部仍可通过27017访问
+    # 如需从宿主机访问MongoDB，取消注释并改为 "27018:27017"
     environment:
       MONGO_INITDB_DATABASE: xinterest
     volumes:
