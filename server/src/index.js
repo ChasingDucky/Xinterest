@@ -10,6 +10,7 @@ const path = require('path');
 // Import routes
 const authRoutes = require('./routes/auth');
 const pinRoutes = require('./routes/pins');
+const userRoutes = require('./routes/users');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/pins', pinRoutes);
+app.use('/api/users', userRoutes);
 
 // Root route - API info
 app.get('/', (req, res) => {
@@ -37,7 +39,8 @@ app.get('/', (req, res) => {
     endpoints: {
       health: '/api/health',
       auth: '/api/auth',
-      pins: '/api/pins'
+      pins: '/api/pins',
+      users: '/api/users'
     },
     frontend: 'http://localhost:7667',
     documentation: 'See README.md for API documentation'

@@ -61,4 +61,10 @@ export const pinsAPI = {
   getUserPins: (userId, params) => api.get(`/pins/user/${userId}`, { params }),
 };
 
+// Users API
+export const usersAPI = {
+  getUser: (id) => api.get(`/users/${id}`),
+  getSavedPins: (id, params) => api.get(`/users/${id}/saved`, { params }),
+};
+
 export default api;

@@ -14,6 +14,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import CreatePin from './pages/CreatePin';
 import PinDetail from './pages/PinDetail';
+import Search from './pages/Search';
+import Profile from './pages/Profile';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -38,7 +40,17 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/search" element={<Search />} />
               <Route path="/pin/:id" element={<PinDetail />} />
+              <Route path="/profile/:id" element={<Profile />} />
+              <Route
+                path="/saved"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/create"
                 element={

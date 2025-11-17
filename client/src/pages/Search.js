@@ -3,13 +3,12 @@ import {
   Container,
   Box,
   Typography,
-  Tabs,
-  Tab,
   Button,
   alpha,
+  Chip,
 } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { SearchOff as SearchOffIcon } from '@mui/icons-material';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
 import PinCard from '../components/PinCard';
 import MasonryGrid from '../components/MasonryGrid';
@@ -17,33 +16,26 @@ import PinSkeleton from '../components/PinSkeleton';
 import EmptyState from '../components/EmptyState';
 import { monetPalette } from '../theme';
 
-const categories = [
-  { value: 'all', label: '全部' },
-  { value: 'fashion', label: '时尚' },
-  { value: 'food', label: '美食' },
-  { value: 'travel', label: '旅行' },
-  { value: 'art', label: '艺术' },
-  { value: 'photography', label: '摄影' },
-  { value: 'design', label: '设计' },
-  { value: 'technology', label: '科技' },
-  { value: 'lifestyle', label: '生活' },
-];
-
-const Home = () => {
+const Search = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const query = searchParams.get('q') || '';
+
   const [pins, setPins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [category, setCategory] = useState('all');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [totalResults, setTotalResults] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
-    loadPins(true);
-  }, [category]);
+    if (query) {
+      loadSearchResults(true);
+    }
+  }, [query]);
 
-  const loadPins = async (reset = false) => {
+  const loadSearchResults = async (reset = false) => {
     try {
       if (reset) {
         setLoading(true);
@@ -55,7 +47,7 @@ const Home = () => {
       const params = {
         page: currentPage,
         limit: 20,
-        category: category !== 'all' ? category : undefined,
+        search: query,
       };
 
       const response = await pinsAPI.getPins(params);
@@ -64,6 +56,7 @@ const Home = () => {
       if (reset) {
         setPins(newPins);
         setPage(1);
+        setTotalResults(response.data.totalPins);
       } else {
         setPins((prev) => [...prev, ...newPins]);
         setPage(currentPage);
@@ -72,61 +65,73 @@ const Home = () => {
       setHasMore(response.data.currentPage < response.data.totalPages);
       setInitialLoad(false);
     } catch (error) {
-      console.error('Error loading pins:', error);
+      console.error('Error loading search results:', error);
     } finally {
       setLoading(false);
       setLoadingMore(false);
     }
   };
 
-  const handleCategoryChange = (event, newValue) => {
-    setCategory(newValue);
-    setPage(1);
-  };
-
   const handleLoadMore = () => {
     if (!loadingMore) {
-      loadPins(false);
+      loadSearchResults(false);
     }
   };
 
   const handlePinDelete = (pinId) => {
     setPins((prev) => prev.filter((pin) => pin._id !== pinId));
+    setTotalResults((prev) => prev - 1);
   };
+
+  if (!query) {
+    return (
+      <EmptyState
+        icon={SearchOffIcon}
+        title="请输入搜索关键词"
+        description="在上方搜索框中输入关键词来搜索内容"
+      />
+    );
+  }
 
   return (
     <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
       <Container maxWidth="xl">
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', py: 2 }}>
-          <Tabs
-            value={category}
-            onChange={handleCategoryChange}
-            variant="scrollable"
-            scrollButtons="auto"
+        {/* Search Header */}
+        <Box sx={{ py: 4 }}>
+          <Typography
+            variant="h4"
             sx={{
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 500,
-                minWidth: 'auto',
-                px: 3,
-              },
-              '& .Mui-selected': {
-                color: monetPalette.waterLily,
-              },
-              '& .MuiTabs-indicator': {
-                backgroundColor: monetPalette.waterLily,
-                height: 3,
-                borderRadius: '3px 3px 0 0',
-              },
+              fontWeight: 700,
+              mb: 1,
+              color: 'text.primary',
             }}
           >
-            {categories.map((cat) => (
-              <Tab key={cat.value} label={cat.label} value={cat.value} />
-            ))}
-          </Tabs>
+            搜索结果
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+            <Typography variant="body1" color="text.secondary">
+              关键词:
+            </Typography>
+            <Chip
+              label={query}
+              sx={{
+                fontSize: '1rem',
+                fontWeight: 600,
+                px: 1,
+                backgroundColor: alpha(monetPalette.waterLily, 0.1),
+                color: monetPalette.waterLily,
+                border: `1px solid ${alpha(monetPalette.waterLily, 0.3)}`,
+              }}
+            />
+            {!loading && !initialLoad && (
+              <Typography variant="body2" color="text.secondary">
+                找到 {totalResults} 个结果
+              </Typography>
+            )}
+          </Box>
         </Box>
 
+        {/* Results */}
         {loading && initialLoad ? (
           <MasonryGrid>
             {[...Array(8)].map((_, index) => (
@@ -135,11 +140,11 @@ const Home = () => {
           </MasonryGrid>
         ) : pins.length === 0 ? (
           <EmptyState
-            title="暂无内容"
-            description="这个分类还没有内容，成为第一个分享的人吧！"
-            actionText="创建内容"
-            onAction={() => navigate('/create')}
-            icon={AddIcon}
+            icon={SearchOffIcon}
+            title="未找到相关内容"
+            description={`没有找到与 "${query}" 相关的内容，试试其他关键词吧`}
+            actionText="返回首页"
+            onAction={() => navigate('/')}
           />
         ) : (
           <>
@@ -188,4 +193,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Search;
