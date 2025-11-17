@@ -12,14 +12,20 @@ import {
   MenuItem,
   alpha,
   styled,
+  Badge,
+  Tooltip,
+  Divider,
 } from '@mui/material';
 import {
   Search as SearchIcon,
   Add as AddIcon,
-  AccountCircle,
   Logout,
   Person,
   Bookmark,
+  Home as HomeIcon,
+  Explore as ExploreIcon,
+  Notifications as NotificationsIcon,
+  Palette as PaletteIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -27,10 +33,19 @@ import { monetPalette } from '../theme';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  borderRadius: theme.shape.borderRadius * 2,
-  backgroundColor: alpha(monetPalette.waterLily, 0.08),
+  borderRadius: theme.shape.borderRadius * 3,
+  backgroundColor: '#F5F5F7',
+  border: '2px solid transparent',
+  transition: 'all 0.3s ease',
   '&:hover': {
-    backgroundColor: alpha(monetPalette.waterLily, 0.12),
+    backgroundColor: '#FFFFFF',
+    borderColor: alpha(monetPalette.waterLily, 0.3),
+    boxShadow: `0 4px 12px ${alpha(monetPalette.waterLily, 0.15)}`,
+  },
+  '&:focus-within': {
+    backgroundColor: '#FFFFFF',
+    borderColor: monetPalette.waterLily,
+    boxShadow: `0 4px 16px ${alpha(monetPalette.waterLily, 0.25)}`,
   },
   marginLeft: 0,
   width: '100%',
@@ -52,19 +67,39 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
+  color: theme.palette.text.primary,
   width: '100%',
+  fontWeight: 500,
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1.5, 1.5, 1.5, 0),
+    padding: theme.spacing(1.5, 2, 1.5, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
+    fontSize: '0.95rem',
+    '&::placeholder': {
+      color: theme.palette.text.secondary,
+      opacity: 0.7,
+    },
     [theme.breakpoints.up('md')]: {
-      width: '40ch',
+      width: '35ch',
       '&:focus': {
-        width: '50ch',
+        width: '45ch',
       },
     },
+  },
+}));
+
+const LogoBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  cursor: 'pointer',
+  padding: theme.spacing(0.5, 1.5),
+  borderRadius: theme.shape.borderRadius * 2,
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    backgroundColor: alpha(monetPalette.waterLily, 0.08),
+    transform: 'translateY(-1px)',
   },
 }));
 
@@ -96,23 +131,40 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="sticky" elevation={0}>
-      <Toolbar sx={{ gap: 2 }}>
-        <Typography
-          variant="h5"
-          component="div"
-          onClick={() => navigate('/')}
-          sx={{
-            fontWeight: 700,
-            cursor: 'pointer',
-            background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.violetAccent})`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            flexShrink: 0,
-          }}
-        >
-          Xinterest
-        </Typography>
+    <AppBar
+      position="sticky"
+      elevation={0}
+      sx={{
+        backdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
+      <Toolbar sx={{ gap: 2, py: 1 }}>
+        <LogoBox onClick={() => navigate('/')}>
+          <PaletteIcon
+            sx={{
+              fontSize: 32,
+              color: monetPalette.waterLily,
+              filter: 'drop-shadow(0 2px 4px rgba(123, 159, 171, 0.3))',
+            }}
+          />
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{
+              fontWeight: 700,
+              background: `linear-gradient(135deg, ${monetPalette.waterLily}, ${monetPalette.violetAccent})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              flexShrink: 0,
+              letterSpacing: '-0.5px',
+            }}
+          >
+            Xinterest
+          </Typography>
+        </LogoBox>
 
         <Box component="form" onSubmit={handleSearch} sx={{ flexGrow: 1, maxWidth: 600 }}>
           <Search>
@@ -128,27 +180,108 @@ const Navbar = () => {
           </Search>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
           {isAuthenticated ? (
             <>
+              <Tooltip title="首页" arrow>
+                <IconButton
+                  onClick={() => navigate('/')}
+                  sx={{
+                    color: 'text.secondary',
+                    '&:hover': {
+                      color: monetPalette.waterLily,
+                      backgroundColor: alpha(monetPalette.waterLily, 0.08),
+                    },
+                  }}
+                >
+                  <HomeIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="探索" arrow>
+                <IconButton
+                  onClick={() => navigate('/')}
+                  sx={{
+                    color: 'text.secondary',
+                    '&:hover': {
+                      color: monetPalette.waterLily,
+                      backgroundColor: alpha(monetPalette.waterLily, 0.08),
+                    },
+                  }}
+                >
+                  <ExploreIcon />
+                </IconButton>
+              </Tooltip>
+
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={() => navigate('/create')}
                 sx={{
-                  background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
+                  borderRadius: 3,
+                  px: 3,
+                  py: 1,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  background: `linear-gradient(135deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
+                  boxShadow: `0 4px 12px ${alpha(monetPalette.waterLily, 0.3)}`,
                   '&:hover': {
-                    background: `linear-gradient(45deg, ${monetPalette.deepWater}, ${monetPalette.willowGreen})`,
+                    background: `linear-gradient(135deg, ${monetPalette.deepWater}, ${monetPalette.willowGreen})`,
+                    boxShadow: `0 6px 16px ${alpha(monetPalette.waterLily, 0.4)}`,
+                    transform: 'translateY(-1px)',
                   },
+                  transition: 'all 0.3s ease',
                 }}
               >
                 创建
               </Button>
-              <IconButton onClick={handleMenuOpen} size="large">
+
+              <Tooltip title="通知" arrow>
+                <IconButton
+                  sx={{
+                    color: 'text.secondary',
+                    '&:hover': {
+                      color: monetPalette.waterLily,
+                      backgroundColor: alpha(monetPalette.waterLily, 0.08),
+                    },
+                  }}
+                >
+                  <Badge badgeContent={0} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+
+              <IconButton
+                onClick={handleMenuOpen}
+                size="large"
+                sx={{
+                  ml: 0.5,
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                  },
+                }}
+              >
                 {user?.avatar ? (
-                  <Avatar src={user.avatar} alt={user.username} />
+                  <Avatar
+                    src={user.avatar}
+                    alt={user.username}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      border: `2px solid ${monetPalette.waterLily}`,
+                    }}
+                  />
                 ) : (
-                  <Avatar sx={{ bgcolor: monetPalette.roseAccent }}>
+                  <Avatar
+                    sx={{
+                      bgcolor: monetPalette.roseAccent,
+                      width: 40,
+                      height: 40,
+                      fontWeight: 600,
+                    }}
+                  >
                     {user?.username?.[0]?.toUpperCase()}
                   </Avatar>
                 )}
@@ -157,31 +290,111 @@ const Navbar = () => {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 PaperProps={{
-                  sx: { mt: 1.5, borderRadius: 2, minWidth: 200 },
+                  sx: {
+                    mt: 1.5,
+                    borderRadius: 3,
+                    minWidth: 220,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                    overflow: 'visible',
+                    '&:before': {
+                      content: '""',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: 'background.paper',
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      zIndex: 0,
+                    },
+                  },
                 }}
               >
-                <MenuItem onClick={() => { navigate(`/profile/${user?._id}`); handleMenuClose(); }}>
-                  <Person sx={{ mr: 1 }} /> 我的主页
+                <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: 'divider' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {user?.username}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {user?.email}
+                  </Typography>
+                </Box>
+                <MenuItem
+                  onClick={() => {
+                    navigate(`/profile/${user?._id}`);
+                    handleMenuClose();
+                  }}
+                  sx={{
+                    py: 1.5,
+                    '&:hover': { backgroundColor: alpha(monetPalette.waterLily, 0.08) },
+                  }}
+                >
+                  <Person sx={{ mr: 1.5, color: monetPalette.waterLily }} />
+                  我的主页
                 </MenuItem>
-                <MenuItem onClick={() => { navigate('/saved'); handleMenuClose(); }}>
-                  <Bookmark sx={{ mr: 1 }} /> 收藏
+                <MenuItem
+                  onClick={() => {
+                    navigate('/saved');
+                    handleMenuClose();
+                  }}
+                  sx={{
+                    py: 1.5,
+                    '&:hover': { backgroundColor: alpha(monetPalette.waterLily, 0.08) },
+                  }}
+                >
+                  <Bookmark sx={{ mr: 1.5, color: monetPalette.pondGreen }} />
+                  我的收藏
                 </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                  <Logout sx={{ mr: 1 }} /> 退出登录
+                <Divider sx={{ my: 1 }} />
+                <MenuItem
+                  onClick={handleLogout}
+                  sx={{
+                    py: 1.5,
+                    color: 'error.main',
+                    '&:hover': { backgroundColor: alpha('#f44336', 0.08) },
+                  }}
+                >
+                  <Logout sx={{ mr: 1.5 }} />
+                  退出登录
                 </MenuItem>
               </Menu>
             </>
           ) : (
             <>
-              <Button onClick={() => navigate('/login')} color="inherit">
+              <Button
+                onClick={() => navigate('/login')}
+                sx={{
+                  color: 'text.primary',
+                  fontWeight: 600,
+                  px: 3,
+                  borderRadius: 3,
+                  '&:hover': {
+                    backgroundColor: alpha(monetPalette.waterLily, 0.08),
+                  },
+                }}
+              >
                 登录
               </Button>
               <Button
                 variant="contained"
                 onClick={() => navigate('/register')}
                 sx={{
-                  background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
+                  borderRadius: 3,
+                  px: 3,
+                  py: 1,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  background: `linear-gradient(135deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
+                  boxShadow: `0 4px 12px ${alpha(monetPalette.waterLily, 0.3)}`,
+                  '&:hover': {
+                    background: `linear-gradient(135deg, ${monetPalette.deepWater}, ${monetPalette.willowGreen})`,
+                    boxShadow: `0 6px 16px ${alpha(monetPalette.waterLily, 0.4)}`,
+                    transform: 'translateY(-1px)',
+                  },
+                  transition: 'all 0.3s ease',
                 }}
               >
                 注册
