@@ -1,12 +1,13 @@
 # Xinterest Docker Management Makefile
 
-.PHONY: help build up down logs restart clean dev-up dev-down status
+.PHONY: help build build-fast rebuild up down logs restart clean dev-up dev-down status
 
 # Default target
 help:
 	@echo "Xinterest Docker Management Commands:"
 	@echo ""
-	@echo "  make build      - Build all Docker images"
+	@echo "  make build      - Build all Docker images (uses cache, FAST ⚡)"
+	@echo "  make rebuild    - Rebuild all images from scratch (slow, no cache)"
 	@echo "  make up         - Start all services in detached mode"
 	@echo "  make down       - Stop all services"
 	@echo "  make logs       - View logs from all services"
@@ -17,10 +18,18 @@ help:
 	@echo "  make status     - Show status of all services"
 	@echo ""
 
-# Build all Docker images
+# Build all Docker images (fast, with cache)
 build:
-	@echo "Building Docker images..."
-	docker-compose build --no-cache
+	@echo "Building Docker images with cache (fast)..."
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose build
+
+# Build alias
+build-fast: build
+
+# Rebuild from scratch (no cache)
+rebuild:
+	@echo "Rebuilding all images from scratch (no cache)..."
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose build --no-cache
 
 # Start all services
 up:
