@@ -22,6 +22,7 @@ import {
   ArrowBack,
   Share,
   Download,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
@@ -154,6 +155,22 @@ const PinDetail = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading image:', error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm('确定要删除这条评论吗？')) {
+      return;
+    }
+
+    try {
+      await pinsAPI.deleteComment(pin._id, commentId);
+      setPin((prev) => ({
+        ...prev,
+        comments: prev.comments.filter((c) => c._id !== commentId),
+      }));
+    } catch (error) {
+      console.error('Error deleting comment:', error);
     }
   };
 
@@ -394,16 +411,36 @@ const PinDetail = () => {
                         >
                           {comment.user?.username?.[0]?.toUpperCase()}
                         </Avatar>
-                        <Box>
-                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                            {comment.user?.username}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {comment.text}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {new Date(comment.createdAt).toLocaleDateString('zh-CN')}
-                          </Typography>
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <Box>
+                              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                {comment.user?.username}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                {comment.text}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {new Date(comment.createdAt).toLocaleDateString('zh-CN')}
+                              </Typography>
+                            </Box>
+                            {/* Delete button - only show for comment author or pin author */}
+                            {isAuthenticated &&
+                             (comment.user?._id === user?._id || pin.author?._id === user?._id) && (
+                              <IconButton
+                                size="small"
+                                onClick={() => handleDeleteComment(comment._id)}
+                                sx={{
+                                  color: 'text.secondary',
+                                  '&:hover': {
+                                    color: 'error.main',
+                                  },
+                                }}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            )}
+                          </Box>
                         </Box>
                       </Box>
                     </Box>

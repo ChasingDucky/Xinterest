@@ -59,6 +59,7 @@ export const pinsAPI = {
   toggleLike: (id) => api.post(`/pins/${id}/like`),
   toggleSave: (id) => api.post(`/pins/${id}/save`),
   addComment: (id, data) => api.post(`/pins/${id}/comments`, data),
+  deleteComment: (pinId, commentId) => api.delete(`/pins/${pinId}/comments/${commentId}`),
   getUserPins: (userId, params) => api.get(`/pins/user/${userId}`, { params }),
 };
 

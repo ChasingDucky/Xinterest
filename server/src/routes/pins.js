@@ -33,5 +33,6 @@ router.delete('/:id', authMiddleware, pinController.deletePin);
 router.post('/:id/like', authMiddleware, pinController.toggleLike);
 router.post('/:id/save', authMiddleware, pinController.toggleSave);
 router.post('/:id/comments', authMiddleware, pinController.addComment);
+router.delete('/:id/comments/:commentId', authMiddleware, pinController.deleteComment);
 
 module.exports = router;

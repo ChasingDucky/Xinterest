@@ -337,6 +337,39 @@ exports.addComment = async (req, res) => {
   }
 };
 
+// Delete comment
+exports.deleteComment = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+
+    const pin = await Pin.findById(id);
+    if (!pin) {
+      return res.status(404).json({ message: 'Pin not found' });
+    }
+
+    const comment = pin.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    // Check if user is the comment author or pin author
+    if (comment.user.toString() !== req.userId && pin.author.toString() !== req.userId) {
+      return res.status(403).json({ message: 'Not authorized to delete this comment' });
+    }
+
+    comment.remove();
+    await pin.save();
+
+    res.json({
+      message: 'Comment deleted successfully',
+      commentId
+    });
+  } catch (error) {
+    console.error('Delete comment error:', error);
+    res.status(500).json({ message: 'Server error deleting comment' });
+  }
+};
+
 // Get user's pins
 exports.getUserPins = async (req, res) => {
   try {
