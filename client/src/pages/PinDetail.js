@@ -19,11 +19,13 @@ import {
   BookmarkBorder,
   Send,
   ArrowBack,
+  Share,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { monetPalette } from '../theme';
+import ShareDialog from '../components/ShareDialog';
 
 const PinDetail = () => {
   const { id } = useParams();
@@ -35,6 +37,7 @@ const PinDetail = () => {
   const [saved, setSaved] = useState(false);
   const [comment, setComment] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   useEffect(() => {
     loadPin();
@@ -192,6 +195,9 @@ const PinDetail = () => {
                 >
                   {saved ? '已收藏' : '收藏'}
                 </Button>
+                <IconButton onClick={() => setShareDialogOpen(true)} size="large">
+                  <Share />
+                </IconButton>
                 <IconButton onClick={handleLike} size="large">
                   {liked ? (
                     <Favorite sx={{ color: monetPalette.roseAccent }} />
@@ -336,6 +342,12 @@ const PinDetail = () => {
             </Box>
           </Box>
         </Paper>
+
+        <ShareDialog
+          open={shareDialogOpen}
+          onClose={() => setShareDialogOpen(false)}
+          pin={pin}
+        />
       </Container>
     </Box>
   );

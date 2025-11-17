@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import CreatePin from './pages/CreatePin';
+import EditPin from './pages/EditPin';
 import PinDetail from './pages/PinDetail';
 import Search from './pages/Search';
 import Profile from './pages/Profile';
@@ -56,6 +57,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <CreatePin />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/edit/:id"
+                element={
+                  <ProtectedRoute>
+                    <EditPin />
                   </ProtectedRoute>
                 }
               />

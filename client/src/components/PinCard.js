@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Card,
-  CardMedia,
   CardContent,
   CardActions,
   Typography,
@@ -18,14 +17,16 @@ import {
   Bookmark,
   BookmarkBorder,
   MoreVert,
-  Share,
   Delete,
   Edit,
+  Share,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { monetPalette } from '../theme';
+import LazyImage from './LazyImage';
+import ShareDialog from './ShareDialog';
 
 const PinCard = ({ pin, onUpdate, onDelete }) => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
   const [likesCount, setLikesCount] = useState(pin.likes?.length || 0);
   const [savesCount, setSavesCount] = useState(pin.saves || 0);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   const handleLike = async (e) => {
     e.stopPropagation();
@@ -107,14 +109,14 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
       }}
       onClick={() => navigate(`/pin/${pin._id}`)}
     >
-      <CardMedia
-        component="img"
-        image={pin.image.startsWith('http') ? pin.image : `http://localhost:7666${pin.image}`}
+      <LazyImage
+        src={pin.image.startsWith('http') ? pin.image : `http://localhost:7666${pin.image}`}
         alt={pin.title}
         sx={{
           width: '100%',
           height: 'auto',
           objectFit: 'cover',
+          borderRadius: 0,
         }}
       />
 
@@ -136,6 +138,19 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+          <IconButton
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShareDialogOpen(true);
+            }}
+            sx={{
+              bgcolor: 'white',
+              '&:hover': { bgcolor: 'white' },
+            }}
+          >
+            <Share sx={{ color: monetPalette.waterLily }} />
+          </IconButton>
           <IconButton
             size="small"
             onClick={handleSave}
@@ -252,6 +267,12 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
           </>
         )}
       </CardActions>
+
+      <ShareDialog
+        open={shareDialogOpen}
+        onClose={() => setShareDialogOpen(false)}
+        pin={pin}
+      />
     </Card>
   );
 };
