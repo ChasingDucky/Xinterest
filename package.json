@@ -1,0 +1,29 @@
+{
+  "name": "xinterest",
+  "version": "1.0.0",
+  "description": "A social sharing platform inspired by Pinterest and Xiaohongshu",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "client": "cd client && npm start",
+    "server": "cd server && npm run dev",
+    "build": "cd client && npm run build"
+  },
+  "keywords": [
+    "pinterest",
+    "xiaohongshu",
+    "social",
+    "sharing",
+    "material-design"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
