@@ -25,6 +25,7 @@ import MasonryGrid from '../components/MasonryGrid';
 import PinSkeleton from '../components/PinSkeleton';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { monetPalette } from '../theme';
 
 const Profile = () => {
@@ -114,12 +115,6 @@ const Profile = () => {
     }
   };
 
-  const handleLoadMore = () => {
-    if (!loadingMore) {
-      loadPins(false);
-    }
-  };
-
   const handlePinDelete = (pinId) => {
     setPins((prev) => prev.filter((pin) => pin._id !== pinId));
   };
@@ -128,6 +123,17 @@ const Profile = () => {
     setActiveTab(newValue);
     setPage(1);
   };
+
+  // Use infinite scroll hook
+  useInfiniteScroll(
+    () => {
+      if (!loadingMore && hasMore) {
+        loadPins(false);
+      }
+    },
+    hasMore,
+    loadingMore || pinsLoading
+  );
 
   if (userLoading) {
     return <LoadingSpinner message="加载用户信息中..." />;
@@ -355,34 +361,23 @@ const Profile = () => {
                   onDelete={handlePinDelete}
                 />
               ))}
-              {loadingMore &&
-                [...Array(4)].map((_, index) => (
-                  <PinSkeleton key={`skeleton-${index}`} />
-                ))}
             </MasonryGrid>
 
-            {hasMore && !loadingMore && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                <Button
-                  variant="outlined"
-                  onClick={handleLoadMore}
-                  sx={{
-                    borderRadius: 3,
-                    px: 4,
-                    py: 1.5,
-                    borderColor: monetPalette.waterLily,
-                    color: monetPalette.waterLily,
-                    fontWeight: 600,
-                    '&:hover': {
-                      borderColor: monetPalette.deepWater,
-                      backgroundColor: alpha(monetPalette.waterLily, 0.08),
-                      transform: 'translateY(-2px)',
-                    },
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  加载更多
-                </Button>
+            {/* Show loading skeletons when loading more */}
+            {loadingMore && (
+              <MasonryGrid>
+                {[...Array(4)].map((_, index) => (
+                  <PinSkeleton key={`skeleton-${index}`} />
+                ))}
+              </MasonryGrid>
+            )}
+
+            {/* Show end message when no more items */}
+            {!hasMore && pins.length > 0 && (
+              <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography variant="body2" color="text.secondary">
+                  已经到底啦 ~
+                </Typography>
               </Box>
             )}
           </>

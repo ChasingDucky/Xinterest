@@ -3,7 +3,6 @@ import {
   Container,
   Box,
   Typography,
-  Button,
   alpha,
   Chip,
 } from '@mui/material';
@@ -14,6 +13,7 @@ import PinCard from '../components/PinCard';
 import MasonryGrid from '../components/MasonryGrid';
 import PinSkeleton from '../components/PinSkeleton';
 import EmptyState from '../components/EmptyState';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { monetPalette } from '../theme';
 
 const Search = () => {
@@ -72,16 +72,21 @@ const Search = () => {
     }
   };
 
-  const handleLoadMore = () => {
-    if (!loadingMore) {
-      loadSearchResults(false);
-    }
-  };
-
   const handlePinDelete = (pinId) => {
     setPins((prev) => prev.filter((pin) => pin._id !== pinId));
     setTotalResults((prev) => prev - 1);
   };
+
+  // Use infinite scroll hook
+  useInfiniteScroll(
+    () => {
+      if (!loadingMore && hasMore) {
+        loadSearchResults(false);
+      }
+    },
+    hasMore,
+    loadingMore || loading
+  );
 
   if (!query) {
     return (
@@ -156,34 +161,23 @@ const Search = () => {
                   onDelete={handlePinDelete}
                 />
               ))}
-              {loadingMore &&
-                [...Array(4)].map((_, index) => (
-                  <PinSkeleton key={`skeleton-${index}`} />
-                ))}
             </MasonryGrid>
 
-            {hasMore && !loadingMore && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                <Button
-                  variant="outlined"
-                  onClick={handleLoadMore}
-                  sx={{
-                    borderRadius: 3,
-                    px: 4,
-                    py: 1.5,
-                    borderColor: monetPalette.waterLily,
-                    color: monetPalette.waterLily,
-                    fontWeight: 600,
-                    '&:hover': {
-                      borderColor: monetPalette.deepWater,
-                      backgroundColor: alpha(monetPalette.waterLily, 0.08),
-                      transform: 'translateY(-2px)',
-                    },
-                    transition: 'all 0.3s ease',
-                  }}
-                >
-                  加载更多
-                </Button>
+            {/* Show loading skeletons when loading more */}
+            {loadingMore && (
+              <MasonryGrid>
+                {[...Array(4)].map((_, index) => (
+                  <PinSkeleton key={`skeleton-${index}`} />
+                ))}
+              </MasonryGrid>
+            )}
+
+            {/* Show end message when no more items */}
+            {!hasMore && pins.length > 0 && (
+              <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography variant="body2" color="text.secondary">
+                  已经到底啦 ~
+                </Typography>
               </Box>
             )}
           </>

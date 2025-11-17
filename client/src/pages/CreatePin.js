@@ -12,11 +12,16 @@ import {
   IconButton,
   Card,
   CardMedia,
+  alpha,
+  LinearProgress,
+  Stack,
 } from '@mui/material';
 import {
   CloudUpload,
   Close as CloseIcon,
   Add as AddIcon,
+  Image as ImageIcon,
+  InsertDriveFile as FileIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
@@ -46,8 +51,11 @@ const CreatePin = () => {
   const [tagInput, setTagInput] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [imageDetails, setImageDetails] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -57,32 +65,71 @@ const CreatePin = () => {
     setError('');
   };
 
+  const processImage = (file) => {
+    if (file.size > 5 * 1024 * 1024) {
+      setError('图片大小不能超过5MB');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setError('请选择图片文件');
+      return;
+    }
+
+    setImageLoading(true);
+    setImageFile(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const img = new Image();
+      img.onload = () => {
+        setImagePreview(reader.result);
+        setImageDetails({
+          name: file.name,
+          size: (file.size / 1024).toFixed(2), // KB
+          width: img.width,
+          height: img.height,
+          type: file.type.split('/')[1].toUpperCase(),
+        });
+        setImageLoading(false);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+    setError('');
+  };
+
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError('图片大小不能超过5MB');
-        return;
-      }
+      processImage(file);
+    }
+  };
 
-      if (!file.type.startsWith('image/')) {
-        setError('请选择图片文件');
-        return;
-      }
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setError('');
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      processImage(file);
     }
   };
 
   const handleRemoveImage = () => {
     setImageFile(null);
     setImagePreview(null);
+    setImageDetails(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -178,50 +225,130 @@ const CreatePin = () => {
                 style={{ display: 'none' }}
               />
 
-              {imagePreview ? (
-                <Card sx={{ position: 'relative', borderRadius: 3 }}>
-                  <CardMedia
-                    component="img"
-                    image={imagePreview}
-                    alt="Preview"
-                    sx={{ maxHeight: 400, objectFit: 'contain' }}
-                  />
-                  <IconButton
-                    onClick={handleRemoveImage}
+              {imageLoading ? (
+                <Box sx={{ p: 4, textAlign: 'center' }}>
+                  <LinearProgress
                     sx={{
-                      position: 'absolute',
-                      top: 16,
-                      right: 16,
-                      bgcolor: 'white',
-                      '&:hover': { bgcolor: 'white' },
+                      mb: 2,
+                      borderRadius: 1,
+                      height: 6,
+                      bgcolor: alpha(monetPalette.waterLily, 0.2),
+                      '& .MuiLinearProgress-bar': {
+                        bgcolor: monetPalette.waterLily,
+                      },
+                    }}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    正在加载图片...
+                  </Typography>
+                </Box>
+              ) : imagePreview ? (
+                <Box>
+                  <Card
+                    sx={{
+                      position: 'relative',
+                      borderRadius: 3,
+                      overflow: 'hidden',
+                      boxShadow: `0 4px 20px ${alpha(monetPalette.waterLily, 0.15)}`,
                     }}
                   >
-                    <CloseIcon />
-                  </IconButton>
-                </Card>
+                    <CardMedia
+                      component="img"
+                      image={imagePreview}
+                      alt="Preview"
+                      sx={{
+                        maxHeight: 500,
+                        objectFit: 'contain',
+                        bgcolor: 'grey.50',
+                      }}
+                    />
+                    <IconButton
+                      onClick={handleRemoveImage}
+                      sx={{
+                        position: 'absolute',
+                        top: 12,
+                        right: 12,
+                        bgcolor: 'rgba(255,255,255,0.95)',
+                        backdropFilter: 'blur(8px)',
+                        '&:hover': {
+                          bgcolor: 'rgba(255,255,255,1)',
+                          transform: 'scale(1.1)',
+                        },
+                        transition: 'all 0.2s',
+                        boxShadow: 2,
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </Card>
+
+                  {/* Image Details */}
+                  {imageDetails && (
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        mt: 2,
+                        p: 2,
+                        bgcolor: alpha(monetPalette.waterLily, 0.05),
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Stack direction="row" spacing={3} flexWrap="wrap">
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <FileIcon sx={{ color: monetPalette.waterLily, fontSize: 20 }} />
+                          <Typography variant="body2" color="text.secondary">
+                            {imageDetails.name}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <ImageIcon sx={{ color: monetPalette.pondGreen, fontSize: 20 }} />
+                          <Typography variant="body2" color="text.secondary">
+                            {imageDetails.width} × {imageDetails.height} px
+                          </Typography>
+                        </Box>
+                        <Typography variant="body2" color="text.secondary">
+                          {imageDetails.size} KB • {imageDetails.type}
+                        </Typography>
+                      </Stack>
+                    </Paper>
+                  )}
+                </Box>
               ) : (
                 <Box
                   onClick={() => fileInputRef.current?.click()}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
                   sx={{
                     border: '2px dashed',
-                    borderColor: monetPalette.waterLily,
+                    borderColor: isDragging ? monetPalette.deepWater : monetPalette.waterLily,
                     borderRadius: 3,
                     p: 6,
                     textAlign: 'center',
                     cursor: 'pointer',
-                    bgcolor: alpha => alpha(monetPalette.waterLily, 0.05),
-                    transition: 'all 0.3s',
+                    bgcolor: isDragging
+                      ? alpha(monetPalette.waterLily, 0.15)
+                      : alpha(monetPalette.waterLily, 0.05),
+                    transition: 'all 0.3s ease',
+                    transform: isDragging ? 'scale(1.02)' : 'scale(1)',
                     '&:hover': {
-                      bgcolor: alpha => alpha(monetPalette.waterLily, 0.1),
+                      bgcolor: alpha(monetPalette.waterLily, 0.1),
                       borderColor: monetPalette.deepWater,
+                      transform: 'scale(1.01)',
                     },
                   }}
                 >
                   <CloudUpload
-                    sx={{ fontSize: 64, color: monetPalette.waterLily, mb: 2 }}
+                    sx={{
+                      fontSize: 64,
+                      color: monetPalette.waterLily,
+                      mb: 2,
+                      transition: 'transform 0.3s',
+                      transform: isDragging ? 'translateY(-8px)' : 'translateY(0)',
+                    }}
                   />
-                  <Typography variant="h6" gutterBottom>
-                    点击上传图片
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                    {isDragging ? '松开鼠标上传' : '点击或拖拽上传图片'}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     支持 JPG, PNG, GIF, WEBP，最大 5MB
