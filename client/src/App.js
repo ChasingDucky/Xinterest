@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Components
 import Navbar from './components/Navbar';
+import LiquidGlassFilters from './components/LiquidGlassFilters';
 
 // Pages
 import Home from './pages/Home';
@@ -36,6 +37,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <LiquidGlassFilters />
       <AuthProvider>
         <Router>
           <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
