@@ -16,6 +16,8 @@ import {
   Person as PersonIcon,
   Bookmark as BookmarkIcon,
   Edit as EditIcon,
+  PersonAdd as PersonAddIcon,
+  PersonRemove as PersonRemoveIcon,
 } from '@mui/icons-material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { usersAPI, pinsAPI } from '../utils/api';
@@ -47,6 +49,8 @@ const Profile = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [activeTab, setActiveTab] = useState(isSavedRoute ? 1 : 0); // 0: Created, 1: Saved
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -65,6 +69,11 @@ const Profile = () => {
       setUserLoading(true);
       const response = await usersAPI.getUser(userId);
       setUser(response.data);
+
+      // Check if current user is following this user
+      if (currentUser && response.data.followers) {
+        setIsFollowing(response.data.followers.includes(currentUser._id));
+      }
     } catch (error) {
       console.error('Error loading user:', error);
       // Could show error state here
@@ -122,6 +131,30 @@ const Profile = () => {
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
     setPage(1);
+  };
+
+  const handleFollow = async () => {
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setFollowLoading(true);
+      const response = await usersAPI.toggleFollow(userId);
+
+      setIsFollowing(response.data.isFollowing);
+
+      // Update follower count in user state
+      setUser((prev) => ({
+        ...prev,
+        followersCount: response.data.followersCount,
+      }));
+    } catch (error) {
+      console.error('Error toggling follow:', error);
+    } finally {
+      setFollowLoading(false);
+    }
   };
 
   // Use infinite scroll hook
@@ -265,8 +298,8 @@ const Profile = () => {
                 </Grid>
               </Grid>
 
-              {/* Edit Button */}
-              {isOwnProfile && (
+              {/* Edit Button / Follow Button */}
+              {isOwnProfile ? (
                 <Button
                   variant="outlined"
                   startIcon={<EditIcon />}
@@ -284,6 +317,40 @@ const Profile = () => {
                   }}
                 >
                   编辑资料
+                </Button>
+              ) : (
+                <Button
+                  variant={isFollowing ? 'outlined' : 'contained'}
+                  startIcon={isFollowing ? <PersonRemoveIcon /> : <PersonAddIcon />}
+                  onClick={handleFollow}
+                  disabled={followLoading}
+                  sx={{
+                    borderRadius: 3,
+                    px: 3,
+                    fontWeight: 600,
+                    ...(isFollowing
+                      ? {
+                          borderColor: monetPalette.waterLily,
+                          color: monetPalette.waterLily,
+                          '&:hover': {
+                            borderColor: monetPalette.deepWater,
+                            backgroundColor: alpha(monetPalette.waterLily, 0.08),
+                          },
+                        }
+                      : {
+                          background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
+                          color: 'white',
+                          '&:hover': {
+                            background: `linear-gradient(45deg, ${monetPalette.deepWater}, ${monetPalette.willowGreen})`,
+                          },
+                        }),
+                  }}
+                >
+                  {followLoading
+                    ? '处理中...'
+                    : isFollowing
+                    ? '已关注'
+                    : '关注'}
                 </Button>
               )}
             </Box>
