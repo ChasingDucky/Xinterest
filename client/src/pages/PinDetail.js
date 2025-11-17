@@ -163,7 +163,7 @@ const PinDetail = () => {
                 src={
                   pin.image.startsWith('http')
                     ? pin.image
-                    : `http://localhost:5000${pin.image}`
+                    : `http://localhost:7666${pin.image}`
                 }
                 alt={pin.title}
                 style={{

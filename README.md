@@ -119,7 +119,7 @@ npm run dev
 ```
 
 这将同时启动：
-- 后端服务器：http://localhost:5000
+- 后端服务器：http://localhost:7666
 - 前端应用：http://localhost:3000
 
 #### 分别启动
@@ -139,6 +139,157 @@ npm start
 ### 6. 访问应用
 
 在浏览器中打开：http://localhost:3000
+
+---
+
+## 🐳 Docker 部署（推荐）
+
+使用 Docker 可以快速启动整个应用栈（包括 MongoDB），无需单独安装依赖。
+
+### 前置要求
+
+- Docker 20.x 或更高版本
+- Docker Compose 2.x 或更高版本
+
+### 快速启动
+
+#### 方式一：使用 Makefile（推荐）
+
+```bash
+# 查看所有可用命令
+make help
+
+# 构建并启动所有服务
+make build
+make up
+
+# 查看日志
+make logs
+
+# 停止服务
+make down
+```
+
+#### 方式二：使用 Docker Compose
+
+```bash
+# 构建镜像
+docker-compose build
+
+# 启动所有服务（后台运行）
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f
+
+# 停止所有服务
+docker-compose down
+
+# 完全清理（包括数据卷）
+docker-compose down -v
+```
+
+### Docker 端口配置
+
+Docker 部署使用以下端口：
+
+- **前端应用**: `http://localhost:7667`
+- **后端 API**: `http://localhost:7666`
+- **MongoDB**: `localhost:27017`
+
+### 环境变量配置
+
+复制 `.env.docker` 到 `.env` 并根据需要修改：
+
+```bash
+cp .env.docker .env
+```
+
+重要：在生产环境中，请务必修改 `JWT_SECRET`！
+
+### Docker 服务说明
+
+#### 服务组成
+
+1. **mongodb** - MongoDB 7.0 数据库
+   - 自动创建数据库和持久化存储
+   - 健康检查确保服务可用
+
+2. **backend** - Node.js API 服务器
+   - 端口：7666
+   - 自动连接到 MongoDB
+   - 包含文件上传持久化卷
+
+3. **frontend** - React Web 应用
+   - 端口：7667
+   - 使用 Nginx 提供静态文件
+   - 自动代理 API 请求到后端
+
+#### 数据持久化
+
+项目使用 Docker volumes 保存数据：
+
+- `xinterest-mongodb-data`: MongoDB 数据
+- `xinterest-uploads`: 用户上传的图片
+
+查看数据卷：
+```bash
+docker volume ls | grep xinterest
+```
+
+### Makefile 命令参考
+
+```bash
+make help       # 显示帮助信息
+make build      # 构建所有镜像
+make up         # 启动所有服务（后台）
+make down       # 停止所有服务
+make logs       # 查看服务日志
+make restart    # 重启所有服务
+make clean      # 清理所有数据（谨慎使用！）
+make dev-up     # 开发模式启动（前台显示日志）
+make status     # 查看服务状态
+```
+
+### 故障排查
+
+#### 端口冲突
+
+如果端口 7666 或 7667 已被占用：
+
+```bash
+# 检查端口占用
+lsof -i :7666
+lsof -i :7667
+
+# 或者修改 docker-compose.yml 中的端口映射
+```
+
+#### 查看容器日志
+
+```bash
+# 查看所有服务日志
+docker-compose logs
+
+# 查看特定服务日志
+docker-compose logs backend
+docker-compose logs frontend
+docker-compose logs mongodb
+```
+
+#### 重新构建镜像
+
+如果代码更新后需要重新构建：
+
+```bash
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+---
 
 ## 📁 项目结构
 

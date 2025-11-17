@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: xinterest-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: xinterest
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - xinterest-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/xinterest --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # Backend API
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: xinterest-backend
+    restart: unless-stopped
+    ports:
+      - "7666:7666"
+    environment:
+      NODE_ENV: production
+      PORT: 7666
+      MONGODB_URI: mongodb://mongodb:27017/xinterest
+      JWT_SECRET: ${JWT_SECRET:-xinterest-secret-key-change-in-production}
+      UPLOAD_PATH: ./uploads
+      MAX_FILE_SIZE: 5242880
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - xinterest-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:7666/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Web Application
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:7666/api
+    container_name: xinterest-frontend
+    restart: unless-stopped
+    ports:
+      - "7667:7667"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - xinterest-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7667"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  xinterest-network:
+    driver: bridge
+    name: xinterest-network
+
+volumes:
+  mongodb_data:
+    name: xinterest-mongodb-data
+  mongodb_config:
+    name: xinterest-mongodb-config
+  uploads_data:
+    name: xinterest-uploads

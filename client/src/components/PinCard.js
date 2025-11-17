@@ -109,7 +109,7 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
     >
       <CardMedia
         component="img"
-        image={pin.image.startsWith('http') ? pin.image : `http://localhost:5000${pin.image}`}
+        image={pin.image.startsWith('http') ? pin.image : `http://localhost:7666${pin.image}`}
         alt={pin.title}
         sx={{
           width: '100%',
