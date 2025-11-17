@@ -28,6 +28,22 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/pins', pinRoutes);
 
+// Root route - API info
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Xinterest API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      pins: '/api/pins'
+    },
+    frontend: 'http://localhost:7667',
+    documentation: 'See README.md for API documentation'
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Xinterest API is running' });
