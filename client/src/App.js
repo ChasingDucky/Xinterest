@@ -19,6 +19,7 @@ import EditProfile from './pages/EditProfile';
 import PinDetail from './pages/PinDetail';
 import Search from './pages/Search';
 import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -79,6 +80,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              {/* 404 - Catch all unmatched routes */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
         </Router>
