@@ -26,108 +26,71 @@ const monetPalette = {
   violetAccent: '#9F86C0',
 };
 
-// Liquid Glass effect utilities - Following Apple's WWDC25 design guidelines
+// Liquid Glass effect utilities - Simplified pure glass design
+// Based on Apple WWDC25 Liquid Glass specification
 export const glassStyles = {
-  // Base glass style without SVG filter - 基础玻璃效果（不含SVG滤镜）
-  // Use this for better performance or when SVG filters are not needed
-  glassBase: {
-    background: alpha('#ffffff', 0.7),
-    backdropFilter: 'blur(20px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-    // Edge highlight - key for Liquid Glass立体感
-    border: `1px solid ${alpha('#ffffff', 0.4)}`,
-    borderTop: `1px solid ${alpha('#ffffff', 0.6)}`,
-    borderLeft: `1px solid ${alpha('#ffffff', 0.5)}`,
-    // Floating shadow - 浮动阴影效果
-    boxShadow: `
-      0 1px 2px 0 ${alpha('#000', 0.05)},
-      0 8px 32px -4px ${alpha('#000', 0.1)},
-      inset 0 1px 1px 0 ${alpha('#ffffff', 0.9)}
-    `,
-  },
-
-  // Standard glass card with edge refraction effect
-  // 标准液态玻璃效果（含边缘折射SVG滤镜）
+  // Standard glass - 标准玻璃效果
+  // Pure white glass with subtle refraction
   glass: {
-    background: alpha('#ffffff', 0.7),
-    backdropFilter: 'blur(20px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-    border: `1px solid ${alpha('#ffffff', 0.4)}`,
-    borderTop: `1px solid ${alpha('#ffffff', 0.6)}`,
-    borderLeft: `1px solid ${alpha('#ffffff', 0.5)}`,
+    position: 'relative',
+    overflow: 'hidden',
+    background: alpha('#000', 0.12),
+    backdropFilter: 'blur(2px)',
+    WebkitBackdropFilter: 'blur(2px)',
     boxShadow: `
-      0 1px 2px 0 ${alpha('#000', 0.05)},
-      0 8px 32px -4px ${alpha('#000', 0.1)},
-      inset 0 1px 1px 0 ${alpha('#ffffff', 0.9)}
+      inset 1px 1px 0px 0px ${alpha('#ffffff', 0.5)},
+      inset -1px -1px 0px 0px ${alpha('#ffffff', 0.6)},
+      inset 2px 2px 6px 2px ${alpha('#ffffff', 0.2)},
+      inset -2px -2px 4px -1px ${alpha('#ffffff', 0.2)}
     `,
-    // Optional: Add SVG filter for edge refraction
-    // Comment out if performance is a concern
-    // filter: 'url(#liquidGlass)',
   },
 
-  // Darker glass variant with stronger refraction
+  // Dark glass variant - 深色玻璃
   glassDark: {
-    background: alpha('#ffffff', 0.5),
-    backdropFilter: 'blur(24px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-    border: `1px solid ${alpha('#ffffff', 0.3)}`,
-    borderTop: `1px solid ${alpha('#ffffff', 0.5)}`,
-    borderLeft: `1px solid ${alpha('#ffffff', 0.4)}`,
+    position: 'relative',
+    overflow: 'hidden',
+    background: alpha('#000', 0.18),
+    backdropFilter: 'blur(3px)',
+    WebkitBackdropFilter: 'blur(3px)',
     boxShadow: `
-      0 1px 2px 0 ${alpha('#000', 0.08)},
-      0 12px 40px -4px ${alpha('#000', 0.15)},
-      inset 0 1px 1px 0 ${alpha('#ffffff', 0.8)}
-    `,
-    // filter: 'url(#liquidGlassDark)',
-  },
-
-  // Colored glass with edge glow
-  glassColor: (color) => ({
-    background: alpha(color, 0.15),
-    backdropFilter: 'blur(20px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-    border: `1px solid ${alpha(color, 0.35)}`,
-    borderTop: `1px solid ${alpha(color, 0.5)}`,
-    borderLeft: `1px solid ${alpha(color, 0.4)}`,
-    boxShadow: `
-      0 1px 2px 0 ${alpha(color, 0.1)},
-      0 8px 32px -4px ${alpha(color, 0.2)},
-      inset 0 1px 1px 0 ${alpha('#ffffff', 0.7)}
-    `,
-    // filter: 'url(#liquidGlass)',
-  }),
-
-  // Frosted glass effect - 磨砂玻璃
-  frosted: {
-    background: alpha('#ffffff', 0.25),
-    backdropFilter: 'blur(30px) saturate(200%)',
-    WebkitBackdropFilter: 'blur(30px) saturate(200%)',
-    border: `1px solid ${alpha('#ffffff', 0.3)}`,
-    borderTop: `1px solid ${alpha('#ffffff', 0.5)}`,
-    boxShadow: `
-      0 2px 4px 0 ${alpha('#000', 0.06)},
-      0 12px 40px -4px ${alpha('#000', 0.12)},
-      inset 0 2px 2px 0 ${alpha('#ffffff', 0.8)}
+      inset 1px 1px 0px 0px ${alpha('#ffffff', 0.4)},
+      inset -1px -1px 0px 0px ${alpha('#ffffff', 0.5)},
+      inset 2px 2px 6px 2px ${alpha('#ffffff', 0.15)},
+      inset -2px -2px 4px -1px ${alpha('#ffffff', 0.15)}
     `,
   },
 
-  // Clear glass - 高透玻璃（用于切换状态按钮）
-  clearGlass: {
-    background: alpha('#ffffff', 0.85),
-    backdropFilter: 'blur(8px) saturate(150%)',
-    WebkitBackdropFilter: 'blur(8px) saturate(150%)',
-    border: `1px solid ${alpha('#ffffff', 0.5)}`,
-    borderTop: `1px solid ${alpha('#ffffff', 0.7)}`,
-    borderLeft: `1px solid ${alpha('#ffffff', 0.6)}`,
+  // Light glass variant - 浅色玻璃
+  glassLight: {
+    position: 'relative',
+    overflow: 'hidden',
+    background: alpha('#000', 0.08),
+    backdropFilter: 'blur(2px)',
+    WebkitBackdropFilter: 'blur(2px)',
     boxShadow: `
-      0 1px 2px 0 ${alpha('#000', 0.04)},
-      0 4px 16px -2px ${alpha('#000', 0.08)},
-      inset 0 1px 1px 0 ${alpha('#ffffff', 1)}
+      inset 1px 1px 0px 0px ${alpha('#ffffff', 0.6)},
+      inset -1px -1px 0px 0px ${alpha('#ffffff', 0.7)},
+      inset 2px 2px 6px 2px ${alpha('#ffffff', 0.25)},
+      inset -2px -2px 4px -1px ${alpha('#ffffff', 0.25)}
     `,
-    // filter: 'url(#liquidGlassSubtle)',
   },
 
-  // Liquid shine effect with smooth光线折射过渡
+  // Pure glass for light backgrounds - 纯净玻璃（浅色背景）
+  glassPure: {
+    position: 'relative',
+    overflow: 'hidden',
+    background: alpha('#ffffff', 0.15),
+    backdropFilter: 'blur(12px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+    boxShadow: `
+      inset 1px 1px 0px 0px ${alpha('#ffffff', 0.8)},
+      inset -1px -1px 0px 0px ${alpha('#ffffff', 0.9)},
+      inset 2px 2px 6px 2px ${alpha('#ffffff', 0.3)},
+      inset -2px -2px 4px -1px ${alpha('#ffffff', 0.3)}
+    `,
+  },
+
+  // Liquid shine effect - 液态光泽
   liquidShine: {
     position: 'relative',
     overflow: 'hidden',
@@ -138,30 +101,14 @@ export const glassStyles = {
       left: '-100%',
       width: '100%',
       height: '100%',
-      background: `linear-gradient(90deg, transparent, ${alpha('#ffffff', 0.4)}, transparent)`,
+      background: `linear-gradient(90deg, transparent, ${alpha('#ffffff', 0.3)}, transparent)`,
       transition: 'left 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+      zIndex: 10,
     },
     '&:hover::before': {
       left: '100%',
     },
   },
-
-  // Edge glow effect - 边缘光晕
-  edgeGlow: (color) => ({
-    position: 'relative',
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      inset: -1,
-      borderRadius: 'inherit',
-      padding: 1,
-      background: `linear-gradient(135deg, ${alpha(color || '#ffffff', 0.6)}, ${alpha(color || '#ffffff', 0.1)})`,
-      WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-      WebkitMaskComposite: 'xor',
-      maskComposite: 'exclude',
-      pointerEvents: 'none',
-    },
-  }),
 };
 
 const theme = createTheme({
