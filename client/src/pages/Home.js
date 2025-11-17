@@ -3,8 +3,6 @@ import {
   Container,
   Box,
   Typography,
-  Tabs,
-  Tab,
   alpha,
 } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -14,20 +12,9 @@ import PinCard from '../components/PinCard';
 import MasonryGrid from '../components/MasonryGrid';
 import PinSkeleton from '../components/PinSkeleton';
 import EmptyState from '../components/EmptyState';
+import CategoryFilter from '../components/CategoryFilter';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { monetPalette } from '../theme';
-
-const categories = [
-  { value: 'all', label: '全部' },
-  { value: 'fashion', label: '时尚' },
-  { value: 'food', label: '美食' },
-  { value: 'travel', label: '旅行' },
-  { value: 'art', label: '艺术' },
-  { value: 'photography', label: '摄影' },
-  { value: 'design', label: '设计' },
-  { value: 'technology', label: '科技' },
-  { value: 'lifestyle', label: '生活' },
-];
 
 const Home = () => {
   const navigate = useNavigate();
@@ -79,8 +66,8 @@ const Home = () => {
     }
   };
 
-  const handleCategoryChange = (event, newValue) => {
-    setCategory(newValue);
+  const handleCategoryChange = (newCategory) => {
+    setCategory(newCategory);
     setPage(1);
   };
 
@@ -102,34 +89,31 @@ const Home = () => {
   return (
     <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
       <Container maxWidth="xl">
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', py: 2 }}>
-          <Tabs
-            value={category}
-            onChange={handleCategoryChange}
-            variant="scrollable"
-            scrollButtons="auto"
+        {/* Hero Section */}
+        <Box sx={{ pt: 4, pb: 2 }}>
+          <Typography
+            variant="h3"
             sx={{
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 500,
-                minWidth: 'auto',
-                px: 3,
-              },
-              '& .Mui-selected': {
-                color: monetPalette.waterLily,
-              },
-              '& .MuiTabs-indicator': {
-                backgroundColor: monetPalette.waterLily,
-                height: 3,
-                borderRadius: '3px 3px 0 0',
-              },
+              fontWeight: 700,
+              background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.violetAccent})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              mb: 1,
             }}
           >
-            {categories.map((cat) => (
-              <Tab key={cat.value} label={cat.label} value={cat.value} />
-            ))}
-          </Tabs>
+            发现灵感
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            探索创意，分享生活，找到你的下一个灵感
+          </Typography>
+        </Box>
+
+        {/* Category Filter */}
+        <Box sx={{ py: 3 }}>
+          <CategoryFilter
+            selectedCategory={category}
+            onCategoryChange={handleCategoryChange}
+          />
         </Box>
 
         {loading && initialLoad ? (

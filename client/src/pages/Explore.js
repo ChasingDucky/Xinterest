@@ -18,11 +18,13 @@ import PinCard from '../components/PinCard';
 import MasonryGrid from '../components/MasonryGrid';
 import PinSkeleton from '../components/PinSkeleton';
 import EmptyState from '../components/EmptyState';
+import CategoryFilter from '../components/CategoryFilter';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { monetPalette } from '../theme';
 
 const Explore = () => {
   const [activeTab, setActiveTab] = useState(0); // 0: Trending, 1: Popular, 2: Latest
+  const [category, setCategory] = useState('all');
   const [pins, setPins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -33,7 +35,7 @@ const Explore = () => {
 
   useEffect(() => {
     loadPins(true);
-  }, [activeTab]);
+  }, [activeTab, category]);
 
   const loadPins = async (reset = false) => {
     try {
@@ -48,6 +50,7 @@ const Explore = () => {
         page: currentPage,
         limit: 20,
         sort: sortOptions[activeTab],
+        category: category !== 'all' ? category : undefined,
       };
 
       const response = await pinsAPI.getPins(params);
@@ -72,6 +75,11 @@ const Explore = () => {
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
+    setPage(1);
+  };
+
+  const handleCategoryChange = (newCategory) => {
+    setCategory(newCategory);
     setPage(1);
   };
 
@@ -190,6 +198,14 @@ const Explore = () => {
             />
           </Tabs>
         </Paper>
+
+        {/* Category Filter */}
+        <Box sx={{ mb: 4 }}>
+          <CategoryFilter
+            selectedCategory={category}
+            onCategoryChange={handleCategoryChange}
+          />
+        </Box>
 
         {/* Pins Grid */}
         {loading ? (
