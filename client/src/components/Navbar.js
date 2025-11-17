@@ -200,7 +200,7 @@ const Navbar = () => {
 
               <Tooltip title="探索" arrow>
                 <IconButton
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate('/explore')}
                   sx={{
                     color: 'text.secondary',
                     '&:hover': {

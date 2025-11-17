@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 
 // Pages
 import Home from './pages/Home';
+import Explore from './pages/Explore';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import CreatePin from './pages/CreatePin';
@@ -40,6 +41,7 @@ function App() {
             <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/explore" element={<Explore />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/search" element={<Search />} />

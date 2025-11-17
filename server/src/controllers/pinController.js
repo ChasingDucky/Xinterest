@@ -48,6 +48,7 @@ exports.getPins = async (req, res) => {
     const skip = (page - 1) * limit;
     const category = req.query.category;
     const search = req.query.search;
+    const sort = req.query.sort || 'latest'; // latest, popular, trending
 
     let query = {};
     if (category && category !== 'all') {
@@ -61,13 +62,54 @@ exports.getPins = async (req, res) => {
       ];
     }
 
-    const pins = await Pin.find(query)
-      .populate('author', 'username avatar')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
+    let pins;
     const total = await Pin.countDocuments(query);
+
+    if (sort === 'popular' || sort === 'trending') {
+      // Use aggregation for sorting by calculated fields
+      const aggregationPipeline = [
+        { $match: query },
+        {
+          $addFields: {
+            likesCount: { $size: '$likes' }
+          }
+        }
+      ];
+
+      if (sort === 'popular') {
+        aggregationPipeline.push({ $sort: { likesCount: -1, saves: -1, createdAt: -1 } });
+      } else {
+        aggregationPipeline.push({ $sort: { views: -1, likesCount: -1, createdAt: -1 } });
+      }
+
+      aggregationPipeline.push(
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'author',
+            foreignField: '_id',
+            as: 'author'
+          }
+        },
+        { $unwind: '$author' },
+        {
+          $project: {
+            'author.password': 0
+          }
+        }
+      );
+
+      pins = await Pin.aggregate(aggregationPipeline);
+    } else {
+      // Default: sort by latest
+      pins = await Pin.find(query)
+        .populate('author', 'username avatar')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+    }
 
     res.json({
       pins,
