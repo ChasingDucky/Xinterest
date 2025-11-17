@@ -22,8 +22,9 @@ const pinValidation = [
 
 // Public routes
 router.get('/', pinController.getPins);
-router.get('/:id', pinController.getPin);
 router.get('/user/:userId', pinController.getUserPins);
+router.get('/:id/related', pinController.getRelatedPins);
+router.get('/:id', pinController.getPin);
 
 // Protected routes (require authentication)
 router.post('/', authMiddleware, upload.single('image'), pinValidation, pinController.createPin);

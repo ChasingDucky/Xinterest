@@ -48,6 +48,7 @@ export const authAPI = {
 export const pinsAPI = {
   getPins: (params) => api.get('/pins', { params }),
   getPin: (id) => api.get(`/pins/${id}`),
+  getRelatedPins: (id, params) => api.get(`/pins/${id}/related`, { params }),
   createPin: (formData) => {
     return api.post('/pins', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

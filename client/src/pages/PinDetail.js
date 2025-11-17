@@ -29,6 +29,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { monetPalette } from '../theme';
 import ShareDialog from '../components/ShareDialog';
 import ImageViewer from '../components/ImageViewer';
+import PinCard from '../components/PinCard';
+import MasonryGrid from '../components/MasonryGrid';
+import PinSkeleton from '../components/PinSkeleton';
 
 const PinDetail = () => {
   const { id } = useParams();
@@ -42,9 +45,12 @@ const PinDetail = () => {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
+  const [relatedPins, setRelatedPins] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
 
   useEffect(() => {
     loadPin();
+    loadRelatedPins();
   }, [id]);
 
   const loadPin = async () => {
@@ -58,6 +64,18 @@ const PinDetail = () => {
       console.error('Error loading pin:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadRelatedPins = async () => {
+    try {
+      setRelatedLoading(true);
+      const response = await pinsAPI.getRelatedPins(id, { limit: 8 });
+      setRelatedPins(response.data.pins || []);
+    } catch (error) {
+      console.error('Error loading related pins:', error);
+    } finally {
+      setRelatedLoading(false);
     }
   };
 
@@ -399,6 +417,38 @@ const PinDetail = () => {
             </Box>
           </Box>
         </Paper>
+
+        {/* Related Pins */}
+        {relatedPins.length > 0 && (
+          <Box sx={{ mt: 6 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 700,
+                mb: 3,
+                background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.violetAccent})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              相关推荐
+            </Typography>
+
+            {relatedLoading ? (
+              <MasonryGrid>
+                {[...Array(4)].map((_, index) => (
+                  <PinSkeleton key={index} />
+                ))}
+              </MasonryGrid>
+            ) : (
+              <MasonryGrid>
+                {relatedPins.map((relatedPin) => (
+                  <PinCard key={relatedPin._id} pin={relatedPin} />
+                ))}
+              </MasonryGrid>
+            )}
+          </Box>
+        )}
 
         <ShareDialog
           open={shareDialogOpen}

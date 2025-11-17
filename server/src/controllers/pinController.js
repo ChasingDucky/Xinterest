@@ -145,6 +145,50 @@ exports.getPin = async (req, res) => {
   }
 };
 
+// Get related pins
+exports.getRelatedPins = async (req, res) => {
+  try {
+    const pin = await Pin.findById(req.params.id);
+
+    if (!pin) {
+      return res.status(404).json({ message: 'Pin not found' });
+    }
+
+    const limit = parseInt(req.query.limit) || 12;
+
+    // Find related pins based on tags and category
+    const query = {
+      _id: { $ne: pin._id }, // Exclude current pin
+      $or: []
+    };
+
+    // Add category match
+    if (pin.category) {
+      query.$or.push({ category: pin.category });
+    }
+
+    // Add tag matches
+    if (pin.tags && pin.tags.length > 0) {
+      query.$or.push({ tags: { $in: pin.tags } });
+    }
+
+    // If no criteria, just get random pins
+    if (query.$or.length === 0) {
+      delete query.$or;
+    }
+
+    const relatedPins = await Pin.find(query)
+      .populate('author', 'username avatar')
+      .limit(limit)
+      .sort({ views: -1, createdAt: -1 });
+
+    res.json({ pins: relatedPins });
+  } catch (error) {
+    console.error('Get related pins error:', error);
+    res.status(500).json({ message: 'Server error fetching related pins' });
+  }
+};
+
 // Update pin
 exports.updatePin = async (req, res) => {
   try {
