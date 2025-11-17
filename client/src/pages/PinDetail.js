@@ -300,9 +300,14 @@ const PinDetail = () => {
                     <Chip
                       key={index}
                       label={tag}
+                      onClick={() => navigate(`/search?q=${encodeURIComponent(tag)}`)}
                       sx={{
                         bgcolor: alpha => alpha(monetPalette.pondGreen, 0.15),
                         color: monetPalette.deepWater,
+                        cursor: 'pointer',
+                        '&:hover': {
+                          bgcolor: alpha => alpha(monetPalette.pondGreen, 0.25),
+                        },
                       }}
                     />
                   ))}

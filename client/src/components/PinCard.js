@@ -234,11 +234,19 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
                 key={index}
                 label={tag}
                 size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/search?q=${encodeURIComponent(tag)}`);
+                }}
                 sx={{
                   bgcolor: alpha => alpha(monetPalette.pondGreen, 0.15),
                   color: monetPalette.deepWater,
                   fontWeight: 500,
                   fontSize: '0.7rem',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    bgcolor: alpha => alpha(monetPalette.pondGreen, 0.25),
+                  },
                 }}
               />
             ))}
