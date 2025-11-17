@@ -8,10 +8,11 @@ import {
   Paper,
   Alert,
   Link,
+  alpha,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { monetPalette } from '../theme';
+import { monetPalette, glassStyles } from '../theme';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -53,17 +54,40 @@ const Login = () => {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        background: `linear-gradient(135deg, ${monetPalette.morningBlue} 0%, ${monetPalette.softLavender} 100%)`,
+        background: `
+          radial-gradient(ellipse at top left, ${alpha(monetPalette.waterLily, 0.2)}, transparent 50%),
+          radial-gradient(ellipse at bottom right, ${alpha(monetPalette.violetAccent, 0.2)}, transparent 50%),
+          linear-gradient(135deg, ${monetPalette.morningBlue} 0%, ${monetPalette.softLavender} 100%)
+        `,
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `
+            radial-gradient(circle at 50% 50%, ${alpha(monetPalette.roseAccent, 0.1)} 0%, transparent 50%)
+          `,
+          animation: 'float 20s ease-in-out infinite',
+          zIndex: 0,
+        },
+        '@keyframes float': {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+          '33%': { transform: 'translate(30px, -30px) scale(1.1)' },
+          '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+        },
       }}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
         <Paper
-          elevation={3}
+          elevation={0}
           sx={{
             p: 4,
             borderRadius: 4,
-            backdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            ...glassStyles.glass,
+            boxShadow: `0 20px 60px ${alpha('#000', 0.15)}`,
           }}
         >
           <Typography

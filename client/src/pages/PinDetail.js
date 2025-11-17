@@ -198,8 +198,37 @@ const PinDetail = () => {
   }
 
   return (
-    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
-      <Container maxWidth="lg">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        py: 4,
+        background: `
+          radial-gradient(ellipse at top center, ${alpha(monetPalette.waterLily, 0.15)}, transparent 50%),
+          radial-gradient(ellipse at bottom center, ${alpha(monetPalette.violetAccent, 0.15)}, transparent 50%),
+          linear-gradient(180deg, #f0f2f5 0%, #fafbfc 100%)
+        `,
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `
+            radial-gradient(circle at 60% 40%, ${alpha(monetPalette.roseAccent, 0.08)} 0%, transparent 50%)
+          `,
+          animation: 'float 20s ease-in-out infinite',
+          zIndex: 0,
+        },
+        '@keyframes float': {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+          '33%': { transform: 'translate(30px, -30px) scale(1.1)' },
+          '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+        },
+      }}
+    >
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <IconButton onClick={() => navigate(-1)} sx={{ mb: 2 }}>
           <ArrowBack />
         </IconButton>
