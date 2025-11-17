@@ -29,6 +29,7 @@ import { alpha } from '@mui/material';
 import LazyImage from './LazyImage';
 import ShareDialog from './ShareDialog';
 import ImageViewer from './ImageViewer';
+import LiquidGlassWrapper from './LiquidGlassWrapper';
 
 const PinCard = ({ pin, onUpdate, onDelete }) => {
   const navigate = useNavigate();
@@ -152,41 +153,55 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-          <IconButton
-            size="small"
+          <LiquidGlassWrapper
+            width="36px"
+            height="36px"
+            borderRadius="50%"
+            variant="light"
+            sx={{
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              '&:hover': {
+                transform: 'scale(1.1) translateY(-2px)',
+              },
+              '&:active': {
+                transform: 'scale(0.95)',
+              },
+            }}
             onClick={(e) => {
               e.stopPropagation();
               setShareDialogOpen(true);
             }}
-            sx={{
-              ...glassStyles.glass,
-              '&:hover': {
-                background: alpha('#ffffff', 0.9),
-                transform: 'scale(1.05)',
-              },
-              transition: 'all 0.2s ease',
-            }}
           >
-            <Share sx={{ color: monetPalette.waterLily }} />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={handleSave}
+            <Share sx={{ color: monetPalette.waterLily, fontSize: 18 }} />
+          </LiquidGlassWrapper>
+
+          <LiquidGlassWrapper
+            width="36px"
+            height="36px"
+            borderRadius="50%"
+            variant="light"
             sx={{
-              ...glassStyles.glass,
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               '&:hover': {
-                background: alpha('#ffffff', 0.9),
-                transform: 'scale(1.05)',
+                transform: 'scale(1.1) translateY(-2px)',
               },
-              transition: 'all 0.2s ease',
+              '&:active': {
+                transform: 'scale(0.95)',
+              },
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSave(e);
             }}
           >
             {saved ? (
-              <Bookmark sx={{ color: monetPalette.roseAccent }} />
+              <Bookmark sx={{ color: monetPalette.roseAccent, fontSize: 18 }} />
             ) : (
-              <BookmarkBorder sx={{ color: monetPalette.deepWater }} />
+              <BookmarkBorder sx={{ color: monetPalette.deepWater, fontSize: 18 }} />
             )}
-          </IconButton>
+          </LiquidGlassWrapper>
         </Box>
 
         <Box>

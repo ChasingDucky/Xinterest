@@ -30,6 +30,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { monetPalette, glassStyles } from '../theme';
+import LiquidGlassWrapper from './LiquidGlassWrapper';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',

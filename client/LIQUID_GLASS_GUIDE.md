@@ -15,7 +15,53 @@ Liquid Glass 是一种纯净的半透明材质，通过**内阴影 + 轻微模�
 
 ## 使用方法
 
-### 1. 基础使用
+### 1. 使用 LiquidGlassWrapper 组件（推荐）
+
+`LiquidGlassWrapper` 是真正的多层玻璃结构实现，完全符合 Apple WWDC25 规范。
+
+```jsx
+import LiquidGlassWrapper from '../components/LiquidGlassWrapper';
+import { HomeIcon } from '@mui/icons-material';
+
+// 圆形玻璃按钮
+<LiquidGlassWrapper
+  width="54px"
+  height="54px"
+  borderRadius="60px"
+  variant="standard"
+  enableFilter={false}  // 可选：启用 SVG 滤镜
+  onClick={() => console.log('clicked')}
+  sx={{
+    cursor: 'pointer',
+    '&:hover': { transform: 'scale(1.05)' },
+    transition: 'all 0.3s ease',
+  }}
+>
+  <HomeIcon sx={{ color: 'rgba(255, 32, 86, 0.7)' }} />
+</LiquidGlassWrapper>
+
+// 矩形玻璃容器
+<LiquidGlassWrapper
+  borderRadius="26px"
+  variant="dark"
+  sx={{ padding: '12px 24px' }}
+>
+  <Typography>Content here</Typography>
+</LiquidGlassWrapper>
+```
+
+**Props:**
+- `borderRadius`: 圆角大小 (默认: '12px')
+- `width`: 宽度 (可选)
+- `height`: 高度 (可选)
+- `variant`: 变体 - 'standard' | 'dark' | 'light' (默认: 'standard')
+- `enableFilter`: 是否启用 SVG 边缘折射滤镜 (默认: false)
+- `sx`: MUI sx 样式对象
+- `children`: 内容
+
+### 2. 使用 glassStyles（轻量级）
+
+如果不需要多层结构，可以直接使用样式工具：
 
 ```jsx
 import { glassStyles } from '../theme';
@@ -42,31 +88,31 @@ import { Box } from '@mui/material';
 </Box>
 ```
 
-### 2. 液态光泽动画
-
-```jsx
-<Button sx={{
-  ...glassStyles.glass,
-  ...glassStyles.liquidShine,
-  borderRadius: 3,
-}}>
-  Hover for Shine Effect
-</Button>
-```
-
 ### 3. 组合使用
 
 ```jsx
-// 带圆角的深色玻璃按钮
-<IconButton sx={{
-  ...glassStyles.glassDark,
-  ...glassStyles.liquidShine,
-  width: 54,
-  height: 54,
-  borderRadius: '60px',
-}}>
+// LiquidGlassWrapper + 液态光泽
+<LiquidGlassWrapper
+  width="120px"
+  height="44px"
+  borderRadius="22px"
+  sx={{
+    ...glassStyles.liquidShine,
+    cursor: 'pointer',
+  }}
+>
+  <Typography>Hover me</Typography>
+</LiquidGlassWrapper>
+
+// 深色变体
+<LiquidGlassWrapper
+  variant="dark"
+  width="54px"
+  height="54px"
+  borderRadius="60px"
+>
   <HomeIcon />
-</IconButton>
+</LiquidGlassWrapper>
 ```
 
 ## SVG 滤镜使用（可选）
@@ -195,7 +241,11 @@ Liquid Glass 应该通过平滑的过渡来显示，而非突然出现：
 ## 完整示例
 
 ```jsx
-// 音乐播放器控制栏示例
+import LiquidGlassWrapper from '../components/LiquidGlassWrapper';
+import { Box, Typography } from '@mui/material';
+import { Home, PlayArrow, Search } from '@mui/icons-material';
+
+// 音乐播放器控制栏示例 - 使用真正的多层玻璃结构
 <Box sx={{
   position: 'fixed',
   bottom: 16,
@@ -203,46 +253,119 @@ Liquid Glass 应该通过平滑的过渡来显示，而非突然出现：
   right: 16,
   display: 'flex',
   gap: 2,
+  zIndex: 1000,
 }}>
   {/* Home 按钮 */}
-  <IconButton sx={{
-    ...glassStyles.glass,
-    ...glassStyles.liquidShine,
-    width: 54,
-    height: 54,
-    borderRadius: '60px',
-  }}>
-    <HomeIcon sx={{ color: 'rgba(255, 32, 86, 0.7)' }} />
-  </IconButton>
+  <LiquidGlassWrapper
+    width="54px"
+    height="54px"
+    borderRadius="60px"
+    variant="standard"
+    sx={{
+      cursor: 'pointer',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      '&:hover': {
+        transform: 'scale(1.05) translateY(-2px)',
+      },
+      '&:active': {
+        transform: 'scale(0.95)',
+      },
+    }}
+  >
+    <Home sx={{ color: 'rgba(255, 32, 86, 0.7)', fontSize: 28 }} />
+  </LiquidGlassWrapper>
 
   {/* 播放控制条 */}
-  <Box sx={{
-    ...glassStyles.glass,
-    ...glassStyles.liquidShine,
-    flex: 1,
-    borderRadius: '26px',
-    padding: '0 24px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 2,
-  }}>
-    <img src="album.jpg" style={{ width: 32, height: 32, borderRadius: 5 }} />
-    <Box sx={{ flex: 1, color: 'rgba(255,255,255,0.8)' }}>
-      <Typography variant="body1" fontWeight="bold">Song Title</Typography>
-      <Typography variant="caption">Artist Name</Typography>
+  <LiquidGlassWrapper
+    borderRadius="26px"
+    variant="standard"
+    sx={{
+      flex: 1,
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        transform: 'translateY(-2px)',
+      },
+    }}
+  >
+    <Box sx={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: 2,
+      padding: '0 24px',
+      width: '100%',
+    }}>
+      <img
+        src="https://via.placeholder.com/32"
+        alt="Album"
+        style={{ width: 32, height: 32, borderRadius: 5 }}
+      />
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography
+          variant="body1"
+          sx={{
+            fontWeight: 'bold',
+            color: 'rgba(255,255,255,0.9)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          Konoyo
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{ color: 'rgba(255,255,255,0.7)' }}
+        >
+          Tim Hecker
+        </Typography>
+      </Box>
+      <PlayArrow sx={{ color: 'rgba(255,255,255,0.8)', fontSize: 32 }} />
     </Box>
-    <PlayIcon sx={{ color: 'rgba(255,255,255,0.8)', width: 28, height: 28 }} />
-  </Box>
+  </LiquidGlassWrapper>
 
   {/* Search 按钮 */}
-  <IconButton sx={{
-    ...glassStyles.glass,
-    ...glassStyles.liquidShine,
-    width: 54,
-    height: 54,
-    borderRadius: '60px',
-  }}>
-    <SearchIcon sx={{ color: 'rgba(255,255,255,0.8)' }} />
-  </IconButton>
+  <LiquidGlassWrapper
+    width="54px"
+    height="54px"
+    borderRadius="60px"
+    variant="standard"
+    sx={{
+      cursor: 'pointer',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      '&:hover': {
+        transform: 'scale(1.05) translateY(-2px)',
+      },
+      '&:active': {
+        transform: 'scale(0.95)',
+      },
+    }}
+  >
+    <Search sx={{ color: 'rgba(255,255,255,0.8)', fontSize: 28 }} />
+  </LiquidGlassWrapper>
 </Box>
 ```
+
+## 多层结构说明
+
+`LiquidGlassWrapper` 内部实现了 5 层结构：
+
+```
+┌─────────────────────────────────┐
+│  Content (z-index: 5)          │  ← 实际内容
+├─────────────────────────────────┤
+│  Sharp (z-index: 3)            │  ← 边缘锐化高光
+│  inset 1px 1px 白色 0.5        │
+├─────────────────────────────────┤
+│  Reflect (z-index: 2)          │  ← 内部反射光
+│  inset 2px 2px 白色 0.2        │
+├─────────────────────────────────┤
+│  Cover (z-index: 2)            │  ← 模糊覆盖层
+│  blur(2px) + 黑色半透明         │
+├─────────────────────────────────┤
+│  Outer (z-index: 0) [可选]     │  ← SVG 滤镜边缘变形
+│  backdrop-filter: url(#filter) │
+└─────────────────────────────────┘
+```
+
+这种多层结构完全模拟了真实玻璃的光学特性，是 Apple WWDC25 Liquid Glass 的核心实现方式。
