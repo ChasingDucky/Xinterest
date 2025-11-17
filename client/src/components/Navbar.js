@@ -29,21 +29,23 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { monetPalette } from '../theme';
+import { monetPalette, glassStyles } from '../theme';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius * 3,
-  backgroundColor: '#F5F5F7',
-  border: '2px solid transparent',
+  background: alpha('#ffffff', 0.6),
+  backdropFilter: 'blur(10px) saturate(180%)',
+  WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+  border: `1px solid ${alpha('#ffffff', 0.2)}`,
   transition: 'all 0.3s ease',
   '&:hover': {
-    backgroundColor: '#FFFFFF',
+    background: alpha('#ffffff', 0.8),
     borderColor: alpha(monetPalette.waterLily, 0.3),
     boxShadow: `0 4px 12px ${alpha(monetPalette.waterLily, 0.15)}`,
   },
   '&:focus-within': {
-    backgroundColor: '#FFFFFF',
+    background: alpha('#ffffff', 0.9),
     borderColor: monetPalette.waterLily,
     boxShadow: `0 4px 16px ${alpha(monetPalette.waterLily, 0.25)}`,
   },
@@ -135,10 +137,10 @@ const Navbar = () => {
       position="sticky"
       elevation={0}
       sx={{
-        backdropFilter: 'blur(8px)',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
+        ...glassStyles.glass,
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        borderBottom: `1px solid ${alpha('#000', 0.05)}`,
       }}
     >
       <Toolbar sx={{ gap: 2, py: 1 }}>
@@ -297,7 +299,8 @@ const Navbar = () => {
                     mt: 1.5,
                     borderRadius: 3,
                     minWidth: 220,
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                    ...glassStyles.glass,
+                    boxShadow: `0 8px 32px ${alpha('#000', 0.15)}`,
                     overflow: 'visible',
                     '&:before': {
                       content: '""',
@@ -307,7 +310,8 @@ const Navbar = () => {
                       right: 14,
                       width: 10,
                       height: 10,
-                      bgcolor: 'background.paper',
+                      background: alpha('#ffffff', 0.7),
+                      backdropFilter: 'blur(20px)',
                       transform: 'translateY(-50%) rotate(45deg)',
                       zIndex: 0,
                     },

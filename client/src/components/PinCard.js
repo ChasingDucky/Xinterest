@@ -24,7 +24,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
-import { monetPalette } from '../theme';
+import { monetPalette, glassStyles } from '../theme';
+import { alpha } from '@mui/material';
 import LazyImage from './LazyImage';
 import ShareDialog from './ShareDialog';
 import ImageViewer from './ImageViewer';
@@ -158,8 +159,12 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
               setShareDialogOpen(true);
             }}
             sx={{
-              bgcolor: 'white',
-              '&:hover': { bgcolor: 'white' },
+              ...glassStyles.glass,
+              '&:hover': {
+                background: alpha('#ffffff', 0.9),
+                transform: 'scale(1.05)',
+              },
+              transition: 'all 0.2s ease',
             }}
           >
             <Share sx={{ color: monetPalette.waterLily }} />
@@ -168,8 +173,12 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
             size="small"
             onClick={handleSave}
             sx={{
-              bgcolor: 'white',
-              '&:hover': { bgcolor: 'white' },
+              ...glassStyles.glass,
+              '&:hover': {
+                background: alpha('#ffffff', 0.9),
+                transform: 'scale(1.05)',
+              },
+              transition: 'all 0.2s ease',
             }}
           >
             {saved ? (
@@ -239,14 +248,17 @@ const PinCard = ({ pin, onUpdate, onDelete }) => {
                   navigate(`/search?q=${encodeURIComponent(tag)}`);
                 }}
                 sx={{
-                  bgcolor: alpha => alpha(monetPalette.pondGreen, 0.15),
+                  bgcolor: alpha(monetPalette.pondGreen, 0.15),
                   color: monetPalette.deepWater,
                   fontWeight: 500,
                   fontSize: '0.7rem',
                   cursor: 'pointer',
+                  backdropFilter: 'blur(5px)',
                   '&:hover': {
-                    bgcolor: alpha => alpha(monetPalette.pondGreen, 0.25),
+                    bgcolor: alpha(monetPalette.pondGreen, 0.25),
+                    transform: 'translateY(-1px)',
                   },
+                  transition: 'all 0.2s ease',
                 }}
               />
             ))}
