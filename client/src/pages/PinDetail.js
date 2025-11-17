@@ -11,6 +11,7 @@ import {
   Paper,
   CircularProgress,
   Divider,
+  alpha,
 } from '@mui/material';
 import {
   Favorite,
@@ -20,6 +21,7 @@ import {
   Send,
   ArrowBack,
   Share,
+  Download,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
@@ -114,6 +116,27 @@ const PinDetail = () => {
     }
   };
 
+  const handleDownload = async () => {
+    try {
+      const imageUrl = pin.image.startsWith('http')
+        ? pin.image
+        : `http://localhost:7666${pin.image}`;
+
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${pin.title || 'image'}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading image:', error);
+    }
+  };
+
   if (loading) {
     return (
       <Box
@@ -195,6 +218,17 @@ const PinDetail = () => {
                 >
                   {saved ? '已收藏' : '收藏'}
                 </Button>
+                <IconButton
+                  onClick={handleDownload}
+                  size="large"
+                  sx={{
+                    '&:hover': {
+                      bgcolor: alpha(monetPalette.pondGreen, 0.1),
+                    },
+                  }}
+                >
+                  <Download />
+                </IconButton>
                 <IconButton onClick={() => setShareDialogOpen(true)} size="large">
                   <Share />
                 </IconButton>

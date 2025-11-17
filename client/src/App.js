@@ -14,6 +14,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import CreatePin from './pages/CreatePin';
 import EditPin from './pages/EditPin';
+import EditProfile from './pages/EditProfile';
 import PinDetail from './pages/PinDetail';
 import Search from './pages/Search';
 import Profile from './pages/Profile';
@@ -65,6 +66,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <EditPin />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/profile"
+                element={
+                  <ProtectedRoute>
+                    <EditProfile />
                   </ProtectedRoute>
                 }
               />

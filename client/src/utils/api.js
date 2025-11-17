@@ -65,6 +65,7 @@ export const pinsAPI = {
 export const usersAPI = {
   getUser: (id) => api.get(`/users/${id}`),
   getSavedPins: (id, params) => api.get(`/users/${id}/saved`, { params }),
+  toggleFollow: (id) => api.post(`/users/${id}/follow`),
 };
 
 export default api;

@@ -270,6 +270,7 @@ const Profile = () => {
                 <Button
                   variant="outlined"
                   startIcon={<EditIcon />}
+                  onClick={() => navigate('/settings/profile')}
                   sx={{
                     borderRadius: 3,
                     px: 3,
