@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Avatar,
-  Button,
   Grid,
   Paper,
   alpha,
@@ -28,6 +27,7 @@ import EmptyState from '../components/EmptyState';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { monetPalette } from '../theme';
 import GlassTabs, { GlassTab } from '../components/AppleUI/GlassTabs';
+import { GlassButton } from '../components/AppleUI';
 
 const Profile = () => {
   const { id } = useParams();
@@ -327,58 +327,40 @@ const Profile = () => {
 
               {/* Edit Button / Follow Button */}
               {isOwnProfile ? (
-                <Button
-                  variant="outlined"
-                  startIcon={<EditIcon />}
+                <GlassButton
+                  icon={<EditIcon />}
                   onClick={() => navigate('/settings/profile')}
-                  sx={{
-                    borderRadius: 3,
-                    px: 3,
-                    borderColor: monetPalette.waterLily,
-                    color: monetPalette.waterLily,
-                    fontWeight: 600,
-                    '&:hover': {
-                      borderColor: monetPalette.deepWater,
-                      backgroundColor: alpha(monetPalette.waterLily, 0.08),
-                    },
-                  }}
+                  size="large"
                 >
                   编辑资料
-                </Button>
+                </GlassButton>
               ) : (
-                <Button
-                  variant={isFollowing ? 'outlined' : 'contained'}
-                  startIcon={isFollowing ? <PersonRemoveIcon /> : <PersonAddIcon />}
+                <GlassButton
+                  icon={isFollowing ? <PersonRemoveIcon /> : <PersonAddIcon />}
                   onClick={handleFollow}
                   disabled={followLoading}
+                  size="large"
                   sx={{
-                    borderRadius: 3,
-                    px: 3,
-                    fontWeight: 600,
-                    ...(isFollowing
+                    background: isFollowing
+                      ? alpha('#000', 0.12)
+                      : `linear-gradient(135deg, ${alpha(monetPalette.waterLily, 0.3)}, ${alpha(
+                          monetPalette.pondGreen,
+                          0.3
+                        )})`,
+                    '&:hover': !followLoading
                       ? {
-                          borderColor: monetPalette.waterLily,
-                          color: monetPalette.waterLily,
-                          '&:hover': {
-                            borderColor: monetPalette.deepWater,
-                            backgroundColor: alpha(monetPalette.waterLily, 0.08),
-                          },
+                          background: isFollowing
+                            ? alpha('#000', 0.18)
+                            : `linear-gradient(135deg, ${alpha(monetPalette.waterLily, 0.4)}, ${alpha(
+                                monetPalette.pondGreen,
+                                0.4
+                              )})`,
                         }
-                      : {
-                          background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
-                          color: 'white',
-                          '&:hover': {
-                            background: `linear-gradient(45deg, ${monetPalette.deepWater}, ${monetPalette.willowGreen})`,
-                          },
-                        }),
+                      : {},
                   }}
                 >
-                  {followLoading
-                    ? '处理中...'
-                    : isFollowing
-                    ? '已关注'
-                    : '关注'}
-                </Button>
+                  {followLoading ? '处理中...' : isFollowing ? '已关注' : '关注'}
+                </GlassButton>
               )}
             </Box>
           </Box>
