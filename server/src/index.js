@@ -71,8 +71,26 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/xinterest';
 
 mongoose.connect(MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     console.log('✅ Connected to MongoDB');
+
+    // Check if database is empty and seed it with demo data
+    const Pin = require('./models/Pin');
+    const pinCount = await Pin.countDocuments();
+
+    if (pinCount === 0) {
+      console.log('📦 Database is empty, seeding with demo data...');
+      try {
+        const seedDatabase = require('./seed');
+        await seedDatabase();
+      } catch (seedError) {
+        console.error('⚠️  Failed to seed demo data:', seedError.message);
+        console.log('   You can manually run: npm run seed');
+      }
+    } else {
+      console.log(`📊 Found ${pinCount} pins in database`);
+    }
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);

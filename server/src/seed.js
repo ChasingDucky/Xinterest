@@ -606,13 +606,29 @@ async function seedDatabase() {
     console.log('   其他账号邮箱格式: foodie@xinterest.com, travel@xinterest.com 等');
     console.log('   所有账号密码均为: password123\n');
 
+    return { users, pins };
+
   } catch (error) {
     console.error('❌ 错误:', error);
-  } finally {
-    await mongoose.connection.close();
-    console.log('👋 数据库连接已关闭');
+    throw error;
   }
 }
 
-// 运行脚本
-seedDatabase();
+// 如果直接运行此脚本（npm run seed）
+if (require.main === module) {
+  mongoose.connect(MONGODB_URI)
+    .then(async () => {
+      console.log('✅ Connected to MongoDB');
+      await seedDatabase();
+      await mongoose.connection.close();
+      console.log('👋 数据库连接已关闭');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('❌ MongoDB connection error:', error);
+      process.exit(1);
+    });
+}
+
+// 导出seed函数供其他模块使用
+module.exports = seedDatabase;
