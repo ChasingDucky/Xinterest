@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Chip, alpha } from '@mui/material';
+import { Box, alpha } from '@mui/material';
 import {
   Checkroom as FashionIcon,
   Restaurant as FoodIcon,
@@ -13,6 +13,7 @@ import {
   GridView as AllIcon,
 } from '@mui/icons-material';
 import { monetPalette } from '../theme';
+import { GlassChip } from './AppleUI';
 
 const categories = [
   { id: 'all', label: '全部', icon: AllIcon, color: monetPalette.waterLily },
@@ -56,36 +57,25 @@ const CategoryFilter = ({ selectedCategory = 'all', onCategoryChange }) => {
         const isSelected = selectedCategory === category.id;
 
         return (
-          <Chip
+          <GlassChip
             key={category.id}
             icon={<Icon />}
             label={category.label}
+            variant={isSelected ? 'filled' : 'standard'}
+            size="large"
             onClick={() => onCategoryChange(category.id)}
             sx={{
-              px: 1,
-              py: 2.5,
-              fontSize: '0.95rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              border: '2px solid',
-              borderColor: isSelected ? category.color : 'transparent',
-              bgcolor: isSelected
-                ? alpha(category.color, 0.15)
-                : alpha(monetPalette.waterLily, 0.05),
-              color: isSelected ? category.color : 'text.primary',
-              '& .MuiChip-icon': {
-                color: isSelected ? category.color : 'text.secondary',
-              },
+              minWidth: 100,
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              background: isSelected
+                ? alpha('#000', 0.2)
+                : alpha('#000', 0.08),
+              borderColor: isSelected
+                ? alpha('#ffffff', 0.3)
+                : alpha('#ffffff', 0.12),
               '&:hover': {
-                bgcolor: alpha(category.color, 0.2),
-                borderColor: category.color,
-                color: category.color,
-                transform: 'translateY(-2px)',
-                boxShadow: `0 4px 12px ${alpha(category.color, 0.3)}`,
-                '& .MuiChip-icon': {
-                  color: category.color,
-                },
+                background: alpha('#000', 0.22),
+                borderColor: alpha('#ffffff', 0.35),
               },
             }}
           />
