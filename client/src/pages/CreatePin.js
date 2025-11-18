@@ -1,21 +1,5 @@
 import React, { useState, useRef } from 'react';
-import {
-  Container,
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Alert,
-  MenuItem,
-  Chip,
-  IconButton,
-  Card,
-  CardMedia,
-  alpha,
-  LinearProgress,
-  Stack,
-} from '@mui/material';
+import { Container, Box, Typography, alpha, MenuItem, Select, FormControl } from '@mui/material';
 import {
   CloudUpload,
   Close as CloseIcon,
@@ -26,6 +10,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
 import { monetPalette } from '../theme';
+import { GlassCard, GlassInput, GlassButton, GlassChip } from '../components/AppleUI';
+import LiquidGlassWrapper from '../components/LiquidGlassWrapper';
 
 const categories = [
   { value: 'fashion', label: '时尚' },
@@ -191,32 +177,66 @@ const CreatePin = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: `
+          radial-gradient(ellipse at top left, ${alpha(monetPalette.waterLily, 0.15)}, transparent 50%),
+          radial-gradient(ellipse at bottom right, ${alpha(monetPalette.pondGreen, 0.15)}, transparent 50%),
+          linear-gradient(180deg, #f0f2f5 0%, #fafbfc 100%)
+        `,
+        py: 6,
+        position: 'relative',
+      }}
+    >
       <Container maxWidth="md">
-        <Paper elevation={0} sx={{ p: 4, borderRadius: 4 }}>
+        <GlassCard variant="standard" borderRadius="24px" padding={5}>
           <Typography
-            variant="h4"
-            gutterBottom
+            variant="h3"
             sx={{
-              fontWeight: 700,
-              background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.violetAccent})`,
+              fontWeight: 800,
+              fontSize: '36px',
+              background: `linear-gradient(135deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              mb: 3,
+              mb: 1,
+              letterSpacing: '-0.02em',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
             }}
           >
             创建新内容
           </Typography>
 
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'rgba(255, 255, 255, 0.7)',
+              mb: 4,
+              fontSize: '15px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+            }}
+          >
+            分享你的创意和灵感
+          </Typography>
+
           {error && (
-            <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
-              {error}
-            </Alert>
+            <LiquidGlassWrapper borderRadius="12px" variant="dark" sx={{ mb: 3, padding: 2 }}>
+              <Typography
+                sx={{
+                  color: 'rgba(255, 82, 82, 0.95)',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                ⚠ {error}
+              </Typography>
+            </LiquidGlassWrapper>
           )}
 
           <Box component="form" onSubmit={handleSubmit}>
             {/* Image Upload */}
-            <Box sx={{ mb: 3 }}>
+            <Box sx={{ mb: 4 }}>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -226,251 +246,357 @@ const CreatePin = () => {
               />
 
               {imageLoading ? (
-                <Box sx={{ p: 4, textAlign: 'center' }}>
-                  <LinearProgress
-                    sx={{
-                      mb: 2,
-                      borderRadius: 1,
-                      height: 6,
-                      bgcolor: alpha(monetPalette.waterLily, 0.2),
-                      '& .MuiLinearProgress-bar': {
-                        bgcolor: monetPalette.waterLily,
-                      },
-                    }}
-                  />
-                  <Typography variant="body2" color="text.secondary">
-                    正在加载图片...
-                  </Typography>
-                </Box>
-              ) : imagePreview ? (
-                <Box>
-                  <Card
-                    sx={{
-                      position: 'relative',
-                      borderRadius: 3,
-                      overflow: 'hidden',
-                      boxShadow: `0 4px 20px ${alpha(monetPalette.waterLily, 0.15)}`,
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      image={imagePreview}
-                      alt="Preview"
+                <LiquidGlassWrapper borderRadius="16px" variant="standard">
+                  <Box sx={{ p: 6, textAlign: 'center' }}>
+                    <Typography
+                      variant="body2"
                       sx={{
-                        maxHeight: 500,
-                        objectFit: 'contain',
-                        bgcolor: 'grey.50',
-                      }}
-                    />
-                    <IconButton
-                      onClick={handleRemoveImage}
-                      sx={{
-                        position: 'absolute',
-                        top: 12,
-                        right: 12,
-                        bgcolor: 'rgba(255,255,255,0.95)',
-                        backdropFilter: 'blur(8px)',
-                        '&:hover': {
-                          bgcolor: 'rgba(255,255,255,1)',
-                          transform: 'scale(1.1)',
-                        },
-                        transition: 'all 0.2s',
-                        boxShadow: 2,
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
                       }}
                     >
-                      <CloseIcon />
-                    </IconButton>
-                  </Card>
+                      正在加载图片...
+                    </Typography>
+                  </Box>
+                </LiquidGlassWrapper>
+              ) : imagePreview ? (
+                <Box>
+                  <LiquidGlassWrapper borderRadius="20px" variant="light">
+                    <Box sx={{ position: 'relative' }}>
+                      <Box
+                        component="img"
+                        src={imagePreview}
+                        alt="Preview"
+                        sx={{
+                          width: '100%',
+                          maxHeight: 500,
+                          objectFit: 'contain',
+                          borderRadius: '20px',
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 16,
+                          right: 16,
+                        }}
+                      >
+                        <GlassButton
+                          variant="icon"
+                          icon={<CloseIcon />}
+                          onClick={handleRemoveImage}
+                          sx={{
+                            background: alpha('#000', 0.25),
+                            '&:hover': {
+                              background: alpha('#000', 0.35),
+                            },
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                  </LiquidGlassWrapper>
 
                   {/* Image Details */}
                   {imageDetails && (
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        mt: 2,
-                        p: 2,
-                        bgcolor: alpha(monetPalette.waterLily, 0.05),
-                        borderRadius: 2,
-                      }}
-                    >
-                      <Stack direction="row" spacing={3} flexWrap="wrap">
+                    <LiquidGlassWrapper borderRadius="12px" variant="light" sx={{ mt: 2, padding: 2 }}>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <FileIcon sx={{ color: monetPalette.waterLily, fontSize: 20 }} />
-                          <Typography variant="body2" color="text.secondary">
+                          <FileIcon sx={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 18 }} />
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'rgba(255, 255, 255, 0.7)',
+                              fontSize: '13px',
+                              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                            }}
+                          >
                             {imageDetails.name}
                           </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <ImageIcon sx={{ color: monetPalette.pondGreen, fontSize: 20 }} />
-                          <Typography variant="body2" color="text.secondary">
+                          <ImageIcon sx={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 18 }} />
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'rgba(255, 255, 255, 0.7)',
+                              fontSize: '13px',
+                              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                            }}
+                          >
                             {imageDetails.width} × {imageDetails.height} px
                           </Typography>
                         </Box>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            fontSize: '13px',
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                          }}
+                        >
                           {imageDetails.size} KB • {imageDetails.type}
                         </Typography>
-                      </Stack>
-                    </Paper>
+                      </Box>
+                    </LiquidGlassWrapper>
                   )}
                 </Box>
               ) : (
-                <Box
-                  onClick={() => fileInputRef.current?.click()}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
+                <LiquidGlassWrapper
+                  borderRadius="20px"
+                  variant={isDragging ? 'standard' : 'light'}
                   sx={{
-                    border: '2px dashed',
-                    borderColor: isDragging ? monetPalette.deepWater : monetPalette.waterLily,
-                    borderRadius: 3,
-                    p: 6,
-                    textAlign: 'center',
                     cursor: 'pointer',
-                    bgcolor: isDragging
-                      ? alpha(monetPalette.waterLily, 0.15)
-                      : alpha(monetPalette.waterLily, 0.05),
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     transform: isDragging ? 'scale(1.02)' : 'scale(1)',
                     '&:hover': {
-                      bgcolor: alpha(monetPalette.waterLily, 0.1),
-                      borderColor: monetPalette.deepWater,
                       transform: 'scale(1.01)',
                     },
                   }}
                 >
-                  <CloudUpload
+                  <Box
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
                     sx={{
-                      fontSize: 64,
-                      color: monetPalette.waterLily,
-                      mb: 2,
-                      transition: 'transform 0.3s',
-                      transform: isDragging ? 'translateY(-8px)' : 'translateY(0)',
+                      p: 8,
+                      textAlign: 'center',
                     }}
-                  />
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                    {isDragging ? '松开鼠标上传' : '点击或拖拽上传图片'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    支持 JPG, PNG, GIF, WEBP，最大 5MB
-                  </Typography>
-                </Box>
+                  >
+                    <CloudUpload
+                      sx={{
+                        fontSize: 64,
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        mb: 2,
+                        transition: 'transform 0.3s',
+                        transform: isDragging ? 'translateY(-8px)' : 'translateY(0)',
+                      }}
+                    />
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        mb: 1,
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                      }}
+                    >
+                      {isDragging ? '松开鼠标上传' : '点击或拖拽上传图片'}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                      }}
+                    >
+                      支持 JPG, PNG, GIF, WEBP，最大 5MB
+                    </Typography>
+                  </Box>
+                </LiquidGlassWrapper>
               )}
             </Box>
 
             {/* Title */}
-            <TextField
-              fullWidth
-              label="标题"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              margin="normal"
-              placeholder="给你的作品起个标题..."
-            />
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                标题 *
+              </Typography>
+              <GlassInput
+                fullWidth
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="给你的作品起个标题..."
+                required
+              />
+            </Box>
 
             {/* Description */}
-            <TextField
-              fullWidth
-              label="描述"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              multiline
-              rows={4}
-              margin="normal"
-              placeholder="介绍一下你的作品..."
-            />
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                描述
+              </Typography>
+              <Box
+                component="textarea"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="介绍一下你的作品..."
+                rows={4}
+                sx={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  fontSize: '15px',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  background: alpha('#000', 0.12),
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  border: `1px solid ${alpha('#ffffff', 0.15)}`,
+                  borderRadius: '12px',
+                  boxShadow: `
+                    inset 1px 1px 0px 0px ${alpha('#ffffff', 0.4)},
+                    inset -1px -1px 0px 0px ${alpha('#ffffff', 0.5)}
+                  `,
+                  resize: 'vertical',
+                  '&:focus': {
+                    outline: 'none',
+                    borderColor: alpha('#ffffff', 0.4),
+                    boxShadow: `
+                      inset 1px 1px 0px 0px ${alpha('#ffffff', 0.5)},
+                      inset -1px -1px 0px 0px ${alpha('#ffffff', 0.6)},
+                      0 0 0 3px ${alpha('#ffffff', 0.1)}
+                    `,
+                  },
+                  '&::placeholder': {
+                    color: 'rgba(255, 255, 255, 0.5)',
+                  },
+                }}
+              />
+            </Box>
 
             {/* Category */}
-            <TextField
-              fullWidth
-              select
-              label="分类"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              margin="normal"
-            >
-              {categories.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                分类 *
+              </Typography>
+              <FormControl fullWidth>
+                <Select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  sx={{
+                    height: '44px',
+                    fontSize: '15px',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    background: alpha('#000', 0.12),
+                    backdropFilter: 'blur(20px) saturate(180%)',
+                    border: `1px solid ${alpha('#ffffff', 0.15)}`,
+                    borderRadius: '12px',
+                    boxShadow: `
+                      inset 1px 1px 0px 0px ${alpha('#ffffff', 0.4)},
+                      inset -1px -1px 0px 0px ${alpha('#ffffff', 0.5)}
+                    `,
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: 'none',
+                    },
+                    '&:hover': {
+                      borderColor: alpha('#ffffff', 0.25),
+                    },
+                    '&.Mui-focused': {
+                      borderColor: alpha('#ffffff', 0.4),
+                      boxShadow: `
+                        inset 1px 1px 0px 0px ${alpha('#ffffff', 0.5)},
+                        inset -1px -1px 0px 0px ${alpha('#ffffff', 0.6)},
+                        0 0 0 3px ${alpha('#ffffff', 0.1)}
+                      `,
+                    },
+                  }}
+                >
+                  {categories.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
 
             {/* Tags */}
-            <Box sx={{ mt: 2 }}>
-              <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                <TextField
+            <Box sx={{ mb: 4 }}>
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                标签（最多10个）
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                <GlassInput
                   fullWidth
-                  label="标签"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyPress={handleTagKeyPress}
-                  placeholder="添加标签（最多10个）"
-                  helperText="按回车键添加标签"
+                  placeholder="添加标签，按回车确认"
                 />
-                <IconButton
+                <GlassButton
+                  variant="icon"
+                  icon={<AddIcon />}
                   onClick={handleAddTag}
                   disabled={!tagInput.trim() || formData.tags.length >= 10}
-                  sx={{
-                    bgcolor: monetPalette.waterLily,
-                    color: 'white',
-                    '&:hover': { bgcolor: monetPalette.deepWater },
-                    '&:disabled': { bgcolor: 'grey.300' },
-                  }}
-                >
-                  <AddIcon />
-                </IconButton>
+                />
               </Box>
 
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                 {formData.tags.map((tag) => (
-                  <Chip
+                  <GlassChip
                     key={tag}
                     label={tag}
+                    variant="filled"
+                    size="medium"
                     onDelete={() => handleRemoveTag(tag)}
-                    sx={{
-                      bgcolor: alpha => alpha(monetPalette.pondGreen, 0.2),
-                      color: monetPalette.deepWater,
-                    }}
                   />
                 ))}
               </Box>
             </Box>
 
-            {/* Submit Button */}
-            <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
-              <Button
-                fullWidth
-                variant="outlined"
-                onClick={() => navigate(-1)}
-                disabled={loading}
-                sx={{
-                  borderColor: monetPalette.waterLily,
-                  color: monetPalette.waterLily,
-                }}
-              >
+            {/* Submit Buttons */}
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <GlassButton fullWidth size="large" onClick={() => navigate(-1)} disabled={loading}>
                 取消
-              </Button>
-              <Button
+              </GlassButton>
+              <GlassButton
                 fullWidth
-                type="submit"
-                variant="contained"
+                size="large"
+                onClick={handleSubmit}
                 disabled={loading}
                 sx={{
-                  background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
+                  background: `linear-gradient(135deg, ${alpha(monetPalette.waterLily, 0.3)}, ${alpha(
+                    monetPalette.pondGreen,
+                    0.3
+                  )})`,
                   '&:hover': {
-                    background: `linear-gradient(45deg, ${monetPalette.deepWater}, ${monetPalette.willowGreen})`,
+                    background: `linear-gradient(135deg, ${alpha(monetPalette.waterLily, 0.4)}, ${alpha(
+                      monetPalette.pondGreen,
+                      0.4
+                    )})`,
                   },
                 }}
               >
                 {loading ? '发布中...' : '发布'}
-              </Button>
+              </GlassButton>
             </Box>
           </Box>
-        </Paper>
+        </GlassCard>
       </Container>
     </Box>
   );
