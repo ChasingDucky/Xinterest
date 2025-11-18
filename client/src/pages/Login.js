@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Box, Typography, alpha } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { monetPalette } from '../theme';
+import { monetPalette, borderRadius } from '../theme';
 import { GlassCard, GlassInput, GlassButton } from '../components/AppleUI';
 import LiquidGlassWrapper from '../components/LiquidGlassWrapper';
 
@@ -75,7 +75,7 @@ const Login = () => {
       <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
         <GlassCard
           variant="standard"
-          borderRadius="24px"
+          borderRadius={borderRadius.xxl}
           padding={5}
           sx={{
             boxShadow: `0 20px 60px ${alpha('#000', 0.12)}`,
@@ -114,7 +114,7 @@ const Login = () => {
 
           {error && (
             <LiquidGlassWrapper
-              borderRadius="12px"
+              borderRadius={borderRadius.sm}
               variant="dark"
               sx={{ mb: 3, padding: 2 }}
             >

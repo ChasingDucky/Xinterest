@@ -9,7 +9,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
-import { monetPalette } from '../theme';
+import { monetPalette, borderRadius } from '../theme';
 import { GlassCard, GlassInput, GlassButton, GlassChip } from '../components/AppleUI';
 import LiquidGlassWrapper from '../components/LiquidGlassWrapper';
 
@@ -190,7 +190,7 @@ const CreatePin = () => {
       }}
     >
       <Container maxWidth="md">
-        <GlassCard variant="standard" borderRadius="24px" padding={5}>
+        <GlassCard variant="standard" borderRadius={borderRadius.xxl} padding={5}>
           <Typography
             variant="h3"
             sx={{
@@ -220,7 +220,7 @@ const CreatePin = () => {
           </Typography>
 
           {error && (
-            <LiquidGlassWrapper borderRadius="12px" variant="dark" sx={{ mb: 3, padding: 2 }}>
+            <LiquidGlassWrapper borderRadius={borderRadius.sm} variant="dark" sx={{ mb: 3, padding: 2 }}>
               <Typography
                 sx={{
                   color: 'rgba(255, 82, 82, 0.95)',
@@ -246,7 +246,7 @@ const CreatePin = () => {
               />
 
               {imageLoading ? (
-                <LiquidGlassWrapper borderRadius="16px" variant="standard">
+                <LiquidGlassWrapper borderRadius={borderRadius.lg} variant="standard">
                   <Box sx={{ p: 6, textAlign: 'center' }}>
                     <Typography
                       variant="body2"
@@ -261,7 +261,7 @@ const CreatePin = () => {
                 </LiquidGlassWrapper>
               ) : imagePreview ? (
                 <Box>
-                  <LiquidGlassWrapper borderRadius="20px" variant="light">
+                  <LiquidGlassWrapper borderRadius={borderRadius.xl} variant="light">
                     <Box sx={{ position: 'relative' }}>
                       <Box
                         component="img"
@@ -271,7 +271,7 @@ const CreatePin = () => {
                           width: '100%',
                           maxHeight: 500,
                           objectFit: 'contain',
-                          borderRadius: '20px',
+                          borderRadius: borderRadius.xl,
                         }}
                       />
                       <Box
@@ -298,7 +298,7 @@ const CreatePin = () => {
 
                   {/* Image Details */}
                   {imageDetails && (
-                    <LiquidGlassWrapper borderRadius="12px" variant="light" sx={{ mt: 2, padding: 2 }}>
+                    <LiquidGlassWrapper borderRadius={borderRadius.sm} variant="light" sx={{ mt: 2, padding: 2 }}>
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <FileIcon sx={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 18 }} />
@@ -342,7 +342,7 @@ const CreatePin = () => {
                 </Box>
               ) : (
                 <LiquidGlassWrapper
-                  borderRadius="20px"
+                  borderRadius={borderRadius.xl}
                   variant={isDragging ? 'standard' : 'light'}
                   sx={{
                     cursor: 'pointer',
@@ -449,7 +449,7 @@ const CreatePin = () => {
                   background: alpha('#000', 0.12),
                   backdropFilter: 'blur(20px) saturate(180%)',
                   border: `1px solid ${alpha('#ffffff', 0.15)}`,
-                  borderRadius: '12px',
+                  borderRadius: borderRadius.sm,
                   boxShadow: `
                     inset 1px 1px 0px 0px ${alpha('#ffffff', 0.4)},
                     inset -1px -1px 0px 0px ${alpha('#ffffff', 0.5)}
@@ -497,7 +497,7 @@ const CreatePin = () => {
                     background: alpha('#000', 0.12),
                     backdropFilter: 'blur(20px) saturate(180%)',
                     border: `1px solid ${alpha('#ffffff', 0.15)}`,
-                    borderRadius: '12px',
+                    borderRadius: borderRadius.sm,
                     boxShadow: `
                       inset 1px 1px 0px 0px ${alpha('#ffffff', 0.4)},
                       inset -1px -1px 0px 0px ${alpha('#ffffff', 0.5)}

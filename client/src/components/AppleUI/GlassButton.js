@@ -2,6 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import LiquidGlassWrapper from '../LiquidGlassWrapper';
 import { alpha } from '@mui/material/styles';
+import { borderRadius } from '../../theme';
 
 /**
  * Apple-style Glass Button
@@ -36,7 +37,7 @@ const GlassButton = ({
   return (
     <LiquidGlassWrapper
       {...(isIconButton ? dimensions : { height: dimensions.height })}
-      borderRadius={isIconButton ? '50%' : '12px'}
+      borderRadius={isIconButton ? borderRadius.full : borderRadius.sm}
       variant="light"
       sx={{
         cursor: disabled ? 'not-allowed' : 'pointer',

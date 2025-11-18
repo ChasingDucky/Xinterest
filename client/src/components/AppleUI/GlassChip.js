@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { borderRadius } from '../../theme';
 
 /**
  * Apple-style Glass Chip
@@ -47,7 +48,7 @@ const GlassChip = ({
 
         // Border and Shadow
         border: `1px solid ${alpha('#ffffff', variant === 'filled' ? 0.2 : 0.15)}`,
-        borderRadius: '16px',
+        borderRadius: borderRadius.xs,
         boxShadow: `
           inset 1px 1px 0px 0px ${alpha('#ffffff', 0.4)},
           inset -1px -1px 0px 0px ${alpha('#ffffff', 0.5)},

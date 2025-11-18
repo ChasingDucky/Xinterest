@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { borderRadius as appleRadius } from '../../theme';
 
 /**
  * Apple-style Glass Card
@@ -9,7 +10,7 @@ import { alpha } from '@mui/material/styles';
 const GlassCard = ({
   children,
   variant = 'standard', // 'standard' | 'dark' | 'light'
-  borderRadius = '16px',
+  borderRadius = appleRadius.lg,
   padding = 3,
   hoverable = false,
   onClick,

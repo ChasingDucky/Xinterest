@@ -2,6 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import LiquidGlassWrapper from '../LiquidGlassWrapper';
+import { borderRadius } from '../../theme';
 
 /**
  * Apple-style Glass Tabs
@@ -39,7 +40,7 @@ export const GlassTab = ({
         backdropFilter: selected ? 'blur(12px) saturate(180%)' : 'none',
         WebkitBackdropFilter: selected ? 'blur(12px) saturate(180%)' : 'none',
 
-        borderRadius: '12px',
+        borderRadius: borderRadius.sm,
         cursor: 'pointer',
         userSelect: 'none',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -83,7 +84,7 @@ const GlassTabs = ({
 }) => {
   return (
     <LiquidGlassWrapper
-      borderRadius="16px"
+      borderRadius={borderRadius.md}
       variant="light"
       sx={{
         display: 'flex',

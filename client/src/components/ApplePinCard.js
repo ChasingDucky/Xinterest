@@ -13,7 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
-import { monetPalette } from '../theme';
+import { monetPalette, borderRadius } from '../theme';
 import { alpha } from '@mui/material/styles';
 import LazyImage from './LazyImage';
 import ShareDialog from './ShareDialog';
@@ -81,7 +81,7 @@ const ApplePinCard = ({ pin, onUpdate, onDelete }) => {
       <GlassCard
         variant="light"
         padding={0}
-        borderRadius="20px"
+        borderRadius={borderRadius.xl}
         hoverable
         onClick={() => navigate(`/pin/${pin._id}`)}
         onMouseEnter={() => setShowActions(true)}
@@ -99,7 +99,7 @@ const ApplePinCard = ({ pin, onUpdate, onDelete }) => {
             width: '100%',
             cursor: 'zoom-in',
             overflow: 'hidden',
-            borderRadius: '20px 20px 0 0',
+            borderRadius: `${borderRadius.xl} ${borderRadius.xl} 0 0`,
           }}
         >
           <LazyImage
@@ -278,7 +278,7 @@ const ApplePinCard = ({ pin, onUpdate, onDelete }) => {
                   }}
                   sx={{
                     padding: '4px 10px',
-                    borderRadius: '12px',
+                    borderRadius: borderRadius.xs,
                     fontSize: '11px',
                     fontWeight: 600,
                     color: 'rgba(255,255,255,0.8)',
