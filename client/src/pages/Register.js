@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Container,
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Alert,
-  Link,
-  alpha,
-} from '@mui/material';
+import { Container, Box, Typography, alpha } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { monetPalette, glassStyles } from '../theme';
+import { monetPalette } from '../theme';
+import { GlassCard, GlassInput, GlassButton } from '../components/AppleUI';
+import LiquidGlassWrapper from '../components/LiquidGlassWrapper';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -69,9 +61,9 @@ const Register = () => {
         display: 'flex',
         alignItems: 'center',
         background: `
-          radial-gradient(ellipse at top right, ${alpha(monetPalette.roseAccent, 0.2)}, transparent 50%),
-          radial-gradient(ellipse at bottom left, ${alpha(monetPalette.waterLily, 0.2)}, transparent 50%),
-          linear-gradient(135deg, ${monetPalette.sunsetPeach} 0%, ${monetPalette.roseAccent} 100%)
+          radial-gradient(ellipse at top right, ${alpha(monetPalette.roseAccent, 0.15)}, transparent 50%),
+          radial-gradient(ellipse at bottom left, ${alpha(monetPalette.waterLily, 0.15)}, transparent 50%),
+          linear-gradient(180deg, #f0f2f5 0%, #fafbfc 100%)
         `,
         position: 'relative',
         '&::before': {
@@ -82,7 +74,7 @@ const Register = () => {
           right: 0,
           bottom: 0,
           backgroundImage: `
-            radial-gradient(circle at 50% 50%, ${alpha(monetPalette.violetAccent, 0.1)} 0%, transparent 50%)
+            radial-gradient(circle at 50% 50%, ${alpha(monetPalette.violetAccent, 0.08)} 0%, transparent 50%)
           `,
           animation: 'float 20s ease-in-out infinite',
           zIndex: 0,
@@ -95,137 +87,200 @@ const Register = () => {
       }}
     >
       <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
-        <Paper
-          elevation={0}
+        <GlassCard
+          variant="standard"
+          borderRadius="24px"
+          padding={5}
           sx={{
-            p: 4,
-            borderRadius: 4,
-            ...glassStyles.glass,
-            boxShadow: `0 20px 60px ${alpha('#000', 0.15)}`,
+            boxShadow: `0 20px 60px ${alpha('#000', 0.12)}`,
           }}
         >
           <Typography
-            variant="h4"
+            variant="h3"
             component="h1"
-            gutterBottom
             sx={{
-              fontWeight: 700,
+              fontWeight: 800,
               textAlign: 'center',
-              background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.violetAccent})`,
+              fontSize: '42px',
+              background: `linear-gradient(135deg, ${monetPalette.roseAccent}, ${monetPalette.violetAccent})`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              mb: 3,
+              mb: 1,
+              letterSpacing: '-0.02em',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
             }}
           >
-            加入 Xinterest
+            加入我们
           </Typography>
 
           <Typography
             variant="body1"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ mb: 4 }}
+            sx={{
+              textAlign: 'center',
+              color: 'rgba(255, 255, 255, 0.7)',
+              mb: 5,
+              fontSize: '16px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+            }}
           >
             发现无限创意，分享美好瞬间
           </Typography>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
-              {error}
-            </Alert>
+            <LiquidGlassWrapper
+              borderRadius="12px"
+              variant="dark"
+              sx={{ mb: 3, padding: 2 }}
+            >
+              <Typography
+                sx={{
+                  color: 'rgba(255, 82, 82, 0.95)',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                ⚠ {error}
+              </Typography>
+            </LiquidGlassWrapper>
           )}
 
-          <Box component="form" onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              label="用户名"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              margin="normal"
-              autoComplete="username"
-              helperText="3-30个字符"
-            />
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            <Box>
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                用户名
+              </Typography>
+              <GlassInput
+                fullWidth
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="3-30个字符"
+                required
+              />
+            </Box>
 
-            <TextField
-              fullWidth
-              label="邮箱"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              margin="normal"
-              autoComplete="email"
-            />
+            <Box>
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                邮箱
+              </Typography>
+              <GlassInput
+                fullWidth
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="输入你的邮箱"
+                required
+              />
+            </Box>
 
-            <TextField
-              fullWidth
-              label="密码"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              margin="normal"
-              autoComplete="new-password"
-              helperText="至少6个字符"
-            />
+            <Box>
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                密码
+              </Typography>
+              <GlassInput
+                fullWidth
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="至少6个字符"
+                required
+              />
+            </Box>
 
-            <TextField
-              fullWidth
-              label="确认密码"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              margin="normal"
-              autoComplete="new-password"
-            />
+            <Box>
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
+                确认密码
+              </Typography>
+              <GlassInput
+                fullWidth
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="再次输入密码"
+                required
+              />
+            </Box>
 
-            <Button
-              type="submit"
+            <GlassButton
               fullWidth
-              variant="contained"
               size="large"
               disabled={loading}
+              onClick={handleSubmit}
               sx={{
-                mt: 3,
-                mb: 2,
-                py: 1.5,
-                background: `linear-gradient(45deg, ${monetPalette.waterLily}, ${monetPalette.pondGreen})`,
+                mt: 2,
+                background: `linear-gradient(135deg, ${alpha(monetPalette.roseAccent, 0.3)}, ${alpha(monetPalette.violetAccent, 0.3)})`,
                 '&:hover': {
-                  background: `linear-gradient(45deg, ${monetPalette.deepWater}, ${monetPalette.willowGreen})`,
+                  background: `linear-gradient(135deg, ${alpha(monetPalette.roseAccent, 0.4)}, ${alpha(monetPalette.violetAccent, 0.4)})`,
                 },
               }}
             >
               {loading ? '注册中...' : '注册'}
-            </Button>
+            </GlassButton>
 
             <Box sx={{ textAlign: 'center', mt: 2 }}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
                 已有账号？{' '}
-                <Link
-                  component="button"
-                  variant="body2"
+                <Box
+                  component="span"
                   onClick={() => navigate('/login')}
                   sx={{
-                    color: monetPalette.waterLily,
-                    textDecoration: 'none',
-                    fontWeight: 600,
+                    color: 'rgba(255, 255, 255, 0.95)',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
                     '&:hover': {
                       textDecoration: 'underline',
                     },
                   }}
                 >
                   立即登录
-                </Link>
+                </Box>
               </Typography>
             </Box>
           </Box>
-        </Paper>
+        </GlassCard>
       </Container>
     </Box>
   );
