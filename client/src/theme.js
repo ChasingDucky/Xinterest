@@ -319,4 +319,4 @@ const theme = createTheme({
 });
 
 export default theme;
-export { monetPalette, glassStyles };
+export { monetPalette };
