@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { borderRadius } from '../../theme';
+import { borderRadius, transitions, easings } from '../../theme';
 
 /**
  * Apple-style Glass Input
- * 苹果风格玻璃输入框
+ * 苹果风格玻璃输入框 - 增强版聚焦动效
  */
 const GlassInput = ({
   value,
@@ -18,6 +18,8 @@ const GlassInput = ({
   sx = {},
   ...props
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <Box
       sx={{
@@ -36,8 +38,10 @@ const GlassInput = ({
             left: 16,
             zIndex: 2,
             display: 'flex',
-            color: 'rgba(255, 255, 255, 0.6)',
+            color: isFocused ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.6)',
             fontSize: 20,
+            transition: transitions.default,
+            transform: isFocused ? 'scale(1.1)' : 'scale(1)',
           }}
         >
           {icon}
@@ -52,6 +56,8 @@ const GlassInput = ({
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         {...props}
         sx={{
           width: '100%',
@@ -78,27 +84,35 @@ const GlassInput = ({
           `,
 
           outline: 'none',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: transitions.default,
+          transform: isFocused ? 'scale(1.005)' : 'scale(1)',
 
           '&::placeholder': {
             color: 'rgba(255, 255, 255, 0.5)',
+            transition: transitions.default,
           },
 
           '&:hover': disabled ? {} : {
             background: alpha('#000', 0.15),
             borderColor: alpha('#ffffff', 0.25),
+            transform: 'scale(1.003)',
           },
 
           '&:focus': {
             background: alpha('#000', 0.18),
-            borderColor: alpha('#ffffff', 0.4),
+            borderColor: alpha('#ffffff', 0.45),
+            transform: 'scale(1.005)',
             boxShadow: `
-              inset 1px 1px 0px 0px ${alpha('#ffffff', 0.4)},
-              inset -1px -1px 0px 0px ${alpha('#ffffff', 0.5)},
-              inset 2px 2px 6px 2px ${alpha('#ffffff', 0.15)},
-              inset -2px -2px 4px -1px ${alpha('#ffffff', 0.15)},
-              0 0 0 3px ${alpha('#ffffff', 0.1)}
+              inset 1px 1px 0px 0px ${alpha('#ffffff', 0.5)},
+              inset -1px -1px 0px 0px ${alpha('#ffffff', 0.6)},
+              inset 2px 2px 8px 2px ${alpha('#ffffff', 0.2)},
+              inset -2px -2px 6px -1px ${alpha('#ffffff', 0.2)},
+              0 0 0 4px ${alpha('#ffffff', 0.12)},
+              0 4px 12px ${alpha('#ffffff', 0.08)}
             `,
+            '&::placeholder': {
+              color: 'rgba(255, 255, 255, 0.3)',
+            },
           },
 
           '&:disabled': {

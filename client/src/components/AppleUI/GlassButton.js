@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import LiquidGlassWrapper from '../LiquidGlassWrapper';
 import { alpha } from '@mui/material/styles';
-import { borderRadius } from '../../theme';
+import { borderRadius, transitions, keyframes, easings, durations } from '../../theme';
 
 /**
  * Apple-style Glass Button
- * 苹果风格玻璃按钮
+ * 苹果风格玻璃按钮 - 增强版动效
  */
 const GlassButton = ({
   children,
@@ -19,6 +19,7 @@ const GlassButton = ({
   sx = {},
   ...props
 }) => {
+  const [ripples, setRipples] = useState([]);
   const sizeMap = {
     small: { height: '32px', padding: '0 16px', fontSize: '13px' },
     medium: { height: '44px', padding: '0 24px', fontSize: '15px' },
@@ -34,6 +35,35 @@ const GlassButton = ({
   const isIconButton = variant === 'icon';
   const dimensions = isIconButton ? iconSizeMap[size] : sizeMap[size];
 
+  // 处理点击波纹效果
+  const handleClick = (e) => {
+    if (disabled) return;
+
+    // 添加波纹
+    const button = e.currentTarget;
+    const rect = button.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+
+    const newRipple = {
+      x,
+      y,
+      size,
+      id: Date.now(),
+    };
+
+    setRipples((prevRipples) => [...prevRipples, newRipple]);
+
+    // 600ms后移除波纹
+    setTimeout(() => {
+      setRipples((prevRipples) => prevRipples.filter((r) => r.id !== newRipple.id));
+    }, 600);
+
+    // 调用原始onClick
+    if (onClick) onClick(e);
+  };
+
   return (
     <LiquidGlassWrapper
       {...(isIconButton ? dimensions : { height: dimensions.height })}
@@ -43,17 +73,21 @@ const GlassButton = ({
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.5 : 1,
         width: fullWidth ? '100%' : isIconButton ? dimensions.width : 'auto',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: transitions.glass,
+        overflow: 'hidden',
+        position: 'relative',
         '&:hover': disabled ? {} : {
-          transform: isIconButton ? 'scale(1.05)' : 'translateY(-1px)',
-          boxShadow: `0 8px 20px ${alpha('#000', 0.15)}`,
+          transform: isIconButton ? 'scale(1.08)' : 'translateY(-2px) scale(1.02)',
+          boxShadow: `0 12px 28px ${alpha('#000', 0.18)}`,
         },
         '&:active': disabled ? {} : {
-          transform: 'scale(0.98)',
+          transform: 'scale(0.96)',
+          transition: transitions.fast,
         },
+        ...keyframes.ripple,
         ...sx,
       }}
-      onClick={disabled ? undefined : onClick}
+      onClick={disabled ? undefined : handleClick}
       {...props}
     >
       <Box
@@ -76,6 +110,24 @@ const GlassButton = ({
         {icon && <Box sx={{ display: 'flex', fontSize: isIconButton ? 20 : 18 }}>{icon}</Box>}
         {!isIconButton && children}
       </Box>
+
+      {/* Ripple Effect */}
+      {ripples.map((ripple) => (
+        <Box
+          key={ripple.id}
+          sx={{
+            position: 'absolute',
+            left: ripple.x,
+            top: ripple.y,
+            width: ripple.size,
+            height: ripple.size,
+            borderRadius: '50%',
+            background: alpha('#ffffff', 0.4),
+            animation: `ripple ${durations.slower}ms ${easings.decelerate}`,
+            pointerEvents: 'none',
+          }}
+        />
+      ))}
     </LiquidGlassWrapper>
   );
 };

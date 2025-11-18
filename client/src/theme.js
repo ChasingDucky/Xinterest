@@ -1,8 +1,9 @@
 import { createTheme, alpha } from '@mui/material/styles';
 import { borderRadius as appleRadius } from './theme/borderRadius';
 
-// Export Apple border radius system
+// Export Apple design systems
 export { borderRadius } from './theme/borderRadius';
+export { easings, durations, keyframes, animations, transitions, complexAnimations, getStaggerDelay } from './theme/animations';
 
 // Monet-inspired color palette - kept for brand identity
 const monetPalette = {

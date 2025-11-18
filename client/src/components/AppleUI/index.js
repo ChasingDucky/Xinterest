@@ -13,3 +13,4 @@ export { default as GlassNavbar } from './GlassNavbar';
 export { default as GlassChip } from './GlassChip';
 export { default as GlassTabs, GlassTab } from './GlassTabs';
 export { default as GlassContainer } from './GlassContainer';
+export { default as GlassLoader } from './GlassLoader';

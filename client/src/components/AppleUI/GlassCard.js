@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { borderRadius as appleRadius } from '../../theme';
+import { borderRadius as appleRadius, transitions, easings } from '../../theme';
 
 /**
  * Apple-style Glass Card
- * 苹果风格玻璃卡片
+ * 苹果风格玻璃卡片 - 增强版3D动效
  */
 const GlassCard = ({
   children,
@@ -17,15 +17,57 @@ const GlassCard = ({
   sx = {},
   ...props
 }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
   const backgroundMap = {
     standard: alpha('#000', 0.12),
     dark: alpha('#000', 0.18),
     light: alpha('#000', 0.08),
   };
 
+  // 处理鼠标移动以实现3D倾斜效果
+  const handleMouseMove = (e) => {
+    if (!hoverable) return;
+
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+
+    setMousePosition({ x, y });
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setMousePosition({ x: 0.5, y: 0.5 });
+  };
+
+  // 计算3D变换
+  const get3DTransform = () => {
+    if (!hoverable || !isHovered) return 'translateY(0) scale(1)';
+
+    const rotateX = (mousePosition.y - 0.5) * -10; // -5deg to 5deg
+    const rotateY = (mousePosition.x - 0.5) * 10;
+
+    return `
+      perspective(1000px)
+      rotateX(${rotateX}deg)
+      rotateY(${rotateY}deg)
+      translateY(-6px)
+      scale(1.02)
+    `;
+  };
+
   return (
     <Box
       onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       {...props}
       sx={{
         position: 'relative',
@@ -49,20 +91,19 @@ const GlassCard = ({
 
         border: `1px solid ${alpha('#ffffff', 0.15)}`,
         cursor: onClick ? 'pointer' : 'default',
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: `all 0.2s ${easings.standard}`,
+        transform: get3DTransform(),
+        transformStyle: 'preserve-3d',
 
-        ...(hoverable && {
-          '&:hover': {
-            transform: 'translateY(-4px) scale(1.01)',
-            boxShadow: `
-              inset 1px 1px 0px 0px ${alpha('#ffffff', 0.6)},
-              inset -1px -1px 0px 0px ${alpha('#ffffff', 0.7)},
-              inset 2px 2px 6px 2px ${alpha('#ffffff', 0.25)},
-              inset -2px -2px 4px -1px ${alpha('#ffffff', 0.25)},
-              0 12px 32px ${alpha('#000', 0.15)}
-            `,
-            borderColor: alpha('#ffffff', 0.2),
-          },
+        ...(hoverable && isHovered && {
+          boxShadow: `
+            inset 1px 1px 0px 0px ${alpha('#ffffff', 0.6)},
+            inset -1px -1px 0px 0px ${alpha('#ffffff', 0.7)},
+            inset 2px 2px 6px 2px ${alpha('#ffffff', 0.25)},
+            inset -2px -2px 4px -1px ${alpha('#ffffff', 0.25)},
+            0 16px 40px ${alpha('#000', 0.2)}
+          `,
+          borderColor: alpha('#ffffff', 0.25),
         }),
 
         ...sx,
