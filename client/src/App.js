@@ -6,7 +6,7 @@ import theme from './theme';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Components
-import Navbar from './components/Navbar';
+import AppleNavbar from './components/AppleNavbar';
 import LiquidGlassFilters from './components/LiquidGlassFilters';
 
 // Pages
@@ -41,7 +41,7 @@ function App() {
       <AuthProvider>
         <Router>
           <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Navbar />
+            <AppleNavbar />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/explore" element={<Explore />} />

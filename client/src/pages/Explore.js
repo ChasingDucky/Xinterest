@@ -14,7 +14,7 @@ import {
   AccessTime as AccessTimeIcon,
 } from '@mui/icons-material';
 import { pinsAPI } from '../utils/api';
-import PinCard from '../components/PinCard';
+import ApplePinCard from '../components/ApplePinCard';
 import MasonryGrid from '../components/MasonryGrid';
 import PinSkeleton from '../components/PinSkeleton';
 import EmptyState from '../components/EmptyState';
@@ -267,7 +267,7 @@ const Explore = () => {
           <>
             <MasonryGrid>
               {pins.map((pin) => (
-                <PinCard
+                <ApplePinCard
                   key={pin._id}
                   pin={pin}
                   onUpdate={handlePinUpdate}

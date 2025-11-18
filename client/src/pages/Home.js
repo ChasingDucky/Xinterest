@@ -8,7 +8,7 @@ import {
 import { Add as AddIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
-import PinCard from '../components/PinCard';
+import ApplePinCard from '../components/ApplePinCard';
 import MasonryGrid from '../components/MasonryGrid';
 import PinSkeleton from '../components/PinSkeleton';
 import EmptyState from '../components/EmptyState';
@@ -171,7 +171,7 @@ const Home = () => {
           <>
             <MasonryGrid>
               {pins.map((pin) => (
-                <PinCard
+                <ApplePinCard
                   key={pin._id}
                   pin={pin}
                   onDelete={handlePinDelete}

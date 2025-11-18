@@ -9,7 +9,7 @@ import {
 import { SearchOff as SearchOffIcon } from '@mui/icons-material';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { pinsAPI } from '../utils/api';
-import PinCard from '../components/PinCard';
+import ApplePinCard from '../components/ApplePinCard';
 import MasonryGrid from '../components/MasonryGrid';
 import PinSkeleton from '../components/PinSkeleton';
 import EmptyState from '../components/EmptyState';
@@ -186,7 +186,7 @@ const Search = () => {
           <>
             <MasonryGrid>
               {pins.map((pin) => (
-                <PinCard
+                <ApplePinCard
                   key={pin._id}
                   pin={pin}
                   onDelete={handlePinDelete}

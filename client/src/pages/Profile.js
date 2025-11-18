@@ -22,7 +22,7 @@ import {
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { usersAPI, pinsAPI } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
-import PinCard from '../components/PinCard';
+import ApplePinCard from '../components/ApplePinCard';
 import MasonryGrid from '../components/MasonryGrid';
 import PinSkeleton from '../components/PinSkeleton';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -451,7 +451,7 @@ const Profile = () => {
           <>
             <MasonryGrid>
               {pins.map((pin) => (
-                <PinCard
+                <ApplePinCard
                   key={pin._id}
                   pin={pin}
                   onDelete={handlePinDelete}
