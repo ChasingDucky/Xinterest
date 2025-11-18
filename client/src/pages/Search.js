@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   alpha,
-  Chip,
 } from '@mui/material';
 import { SearchOff as SearchOffIcon } from '@mui/icons-material';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -15,6 +14,7 @@ import PinSkeleton from '../components/PinSkeleton';
 import EmptyState from '../components/EmptyState';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { monetPalette } from '../theme';
+import { GlassChip } from '../components/AppleUI';
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -145,22 +145,29 @@ const Search = () => {
             搜索结果
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-            <Typography variant="body1" color="text.secondary">
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontWeight: 600,
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              }}
+            >
               关键词:
             </Typography>
-            <Chip
+            <GlassChip
               label={query}
-              sx={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                px: 1,
-                backgroundColor: alpha(monetPalette.waterLily, 0.1),
-                color: monetPalette.waterLily,
-                border: `1px solid ${alpha(monetPalette.waterLily, 0.3)}`,
-              }}
+              variant="filled"
+              size="large"
             />
             {!loading && !initialLoad && (
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                }}
+              >
                 找到 {totalResults} 个结果
               </Typography>
             )}

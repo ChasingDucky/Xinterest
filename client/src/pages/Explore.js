@@ -3,9 +3,6 @@ import {
   Container,
   Box,
   Typography,
-  Tabs,
-  Tab,
-  Paper,
   alpha,
 } from '@mui/material';
 import {
@@ -21,6 +18,7 @@ import EmptyState from '../components/EmptyState';
 import CategoryFilter from '../components/CategoryFilter';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { monetPalette } from '../theme';
+import GlassTabs, { GlassTab } from '../components/AppleUI/GlassTabs';
 
 const Explore = () => {
   const [activeTab, setActiveTab] = useState(0); // 0: Trending, 1: Popular, 2: Latest
@@ -162,79 +160,28 @@ const Explore = () => {
         </Box>
 
         {/* Tabs */}
-        <Paper
-          elevation={0}
-          sx={{
-            mb: 4,
-            borderRadius: 4,
-            overflow: 'hidden',
-            border: `1px solid ${alpha(monetPalette.waterLily, 0.1)}`,
-          }}
-        >
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            variant="fullWidth"
-            sx={{
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 600,
-                py: 2,
-              },
-              '& .Mui-selected': {
-                color: monetPalette.waterLily,
-              },
-              '& .MuiTabs-indicator': {
-                backgroundColor: monetPalette.waterLily,
-                height: 3,
-              },
-            }}
-          >
-            <Tab
+        <Box sx={{ mb: 4 }}>
+          <GlassTabs variant="fullWidth">
+            <GlassTab
               icon={<TrendingUpIcon />}
-              iconPosition="start"
               label="热门趋势"
-              sx={{
-                background:
-                  activeTab === 0
-                    ? `linear-gradient(135deg, ${alpha(
-                        monetPalette.waterLily,
-                        0.1
-                      )}, ${alpha(monetPalette.pondGreen, 0.05)})`
-                    : 'transparent',
-              }}
+              selected={activeTab === 0}
+              onClick={() => handleTabChange(null, 0)}
             />
-            <Tab
+            <GlassTab
               icon={<WhatshotIcon />}
-              iconPosition="start"
               label="最受欢迎"
-              sx={{
-                background:
-                  activeTab === 1
-                    ? `linear-gradient(135deg, ${alpha(
-                        monetPalette.roseAccent,
-                        0.1
-                      )}, ${alpha(monetPalette.violetAccent, 0.05)})`
-                    : 'transparent',
-              }}
+              selected={activeTab === 1}
+              onClick={() => handleTabChange(null, 1)}
             />
-            <Tab
+            <GlassTab
               icon={<AccessTimeIcon />}
-              iconPosition="start"
               label="最新发布"
-              sx={{
-                background:
-                  activeTab === 2
-                    ? `linear-gradient(135deg, ${alpha(
-                        monetPalette.pondGreen,
-                        0.1
-                      )}, ${alpha(monetPalette.waterLily, 0.05)})`
-                    : 'transparent',
-              }}
+              selected={activeTab === 2}
+              onClick={() => handleTabChange(null, 2)}
             />
-          </Tabs>
-        </Paper>
+          </GlassTabs>
+        </Box>
 
         {/* Category Filter */}
         <Box sx={{ mb: 4 }}>

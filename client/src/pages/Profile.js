@@ -5,8 +5,6 @@ import {
   Typography,
   Avatar,
   Button,
-  Tabs,
-  Tab,
   Grid,
   Paper,
   alpha,
@@ -29,6 +27,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import { monetPalette } from '../theme';
+import GlassTabs, { GlassTab } from '../components/AppleUI/GlassTabs';
 
 const Profile = () => {
   const { id } = useParams();
@@ -386,38 +385,21 @@ const Profile = () => {
         </Paper>
 
         {/* Tabs */}
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            sx={{
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 600,
-                minWidth: 120,
-              },
-              '& .Mui-selected': {
-                color: monetPalette.waterLily,
-              },
-              '& .MuiTabs-indicator': {
-                backgroundColor: monetPalette.waterLily,
-                height: 3,
-                borderRadius: '3px 3px 0 0',
-              },
-            }}
-          >
-            <Tab
+        <Box sx={{ mb: 3, maxWidth: 400 }}>
+          <GlassTabs variant="fullWidth">
+            <GlassTab
               icon={<PersonIcon />}
-              iconPosition="start"
               label={`创作 (${user.pinsCount || 0})`}
+              selected={activeTab === 0}
+              onClick={() => handleTabChange(null, 0)}
             />
-            <Tab
+            <GlassTab
               icon={<BookmarkIcon />}
-              iconPosition="start"
               label={`收藏 (${user.savedPinsCount || 0})`}
+              selected={activeTab === 1}
+              onClick={() => handleTabChange(null, 1)}
             />
-          </Tabs>
+          </GlassTabs>
         </Box>
 
         {/* Pins Grid */}
