@@ -116,7 +116,7 @@ const ApplePinCard = ({ pin, onUpdate, onDelete }) => {
             }}
           />
 
-          {/* Floating Action Buttons */}
+          {/* Floating Action Buttons - 控制按钮，移动端使用液态玻璃 */}
           <Box
             sx={{
               position: 'absolute',
@@ -129,61 +129,50 @@ const ApplePinCard = ({ pin, onUpdate, onDelete }) => {
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
-            <LiquidGlassWrapper
-              width="40px"
-              height="40px"
-              borderRadius="50%"
-              variant="standard"
+            {/* 分享按钮 - 控制按钮 */}
+            <GlassButton
+              variant="icon"
+              size="small"
+              icon={<Share />}
+              controlButton={true}
               onClick={(e) => {
                 e.stopPropagation();
                 setShareDialogOpen(true);
               }}
               sx={{
-                cursor: 'pointer',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                },
+                backgroundColor: alpha('#000', 0.3),
               }}
-            >
-              <Share sx={{ fontSize: 18, color: 'rgba(255,255,255,0.95)' }} />
-            </LiquidGlassWrapper>
+            />
 
-            <LiquidGlassWrapper
-              width="40px"
-              height="40px"
-              borderRadius="50%"
-              variant="standard"
+            {/* 保存按钮 - 控制按钮 */}
+            <GlassButton
+              variant="icon"
+              size="small"
+              icon={saved ? <Bookmark sx={{ color: monetPalette.roseAccent }} /> : <BookmarkBorder />}
+              controlButton={true}
               onClick={(e) => {
                 e.stopPropagation();
                 handleSave(e);
               }}
               sx={{
-                cursor: 'pointer',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                },
+                backgroundColor: alpha('#000', 0.3),
               }}
-            >
-              {saved ? (
-                <Bookmark sx={{ fontSize: 18, color: monetPalette.roseAccent }} />
-              ) : (
-                <BookmarkBorder sx={{ fontSize: 18, color: 'rgba(255,255,255,0.95)' }} />
-              )}
-            </LiquidGlassWrapper>
+            />
 
+            {/* 更多选项按钮 - 控制按钮 */}
             {isOwner && (
-              <LiquidGlassWrapper
-                width="40px"
-                height="40px"
-                borderRadius="50%"
-                variant="standard"
+              <GlassButton
+                variant="icon"
+                size="small"
+                icon={<MoreVert />}
+                controlButton={true}
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                sx={{ cursor: 'pointer' }}
-              >
-                <MoreVert sx={{ fontSize: 18, color: 'rgba(255,255,255,0.95)' }} />
-              </LiquidGlassWrapper>
+                sx={{
+                  backgroundColor: alpha('#000', 0.3),
+                }}
+              />
             )}
           </Box>
 
@@ -298,22 +287,15 @@ const ApplePinCard = ({ pin, onUpdate, onDelete }) => {
             </Box>
           )}
 
-          {/* Like Count */}
+          {/* Like Count - 点赞控制按钮 */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <LiquidGlassWrapper
-              width="32px"
-              height="32px"
-              borderRadius="50%"
-              variant="light"
+            <GlassButton
+              variant="icon"
+              size="small"
+              icon={liked ? <Favorite sx={{ color: monetPalette.roseAccent }} /> : <FavoriteBorder />}
+              controlButton={true}
               onClick={handleLike}
-              sx={{ cursor: 'pointer' }}
-            >
-              {liked ? (
-                <Favorite sx={{ fontSize: 16, color: monetPalette.roseAccent }} />
-              ) : (
-                <FavoriteBorder sx={{ fontSize: 16, color: 'rgba(255,255,255,0.7)' }} />
-              )}
-            </LiquidGlassWrapper>
+            />
             <Typography
               variant="caption"
               sx={{
